@@ -1,0 +1,5 @@
+
+namespace mochila {
+     int foo;
+
+}
