@@ -6,8 +6,6 @@ def mochila_fuerza_bruta(pesos, precios, W):
     return
 
 
-
-
 def generar_subconjuntos(pre, conj):
 
     if len(conj) == 1:
