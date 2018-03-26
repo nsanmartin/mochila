@@ -5,7 +5,7 @@
 #include <vector>
 
 
-typedef pair<int,int> item_t;
-typedef pair<int,int> item_sum_t;
+typedef std::pair<int,int> item_t;
+typedef std::pair<int,int> item_sum_t;
 
 #endif

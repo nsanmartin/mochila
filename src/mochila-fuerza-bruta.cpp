@@ -1,13 +1,12 @@
 #include <iostream>
-#include <vector>
 #include <numeric>
-#include <utility>
 
+#include "mochila.h"
 using namespace std;
 void
 resolver_fuerza_bruta2 (vector<int> &pre, vector<int> &conj, int W,
-                        pair<int,int> &totales,
-                        vector<pair<int,int>> &items,
+                        item_sum_t &totales,
+                        vector<item_t> &items,
                         vector<int> &beneficios) ;
 
 void
@@ -25,8 +24,8 @@ int calcular_suma(vector<int>&ps,vector<int>&conj) {
 
 // obtiene peso y beneficio de un subconjunto conj de items
 // O(n) , n == len(conj)
-pair<int,int> calcular_sumas(vector<pair<int,int>>&items, vector<int>&conj) {
-     pair<int,int> res(0,0);
+item_sum_t calcular_sumas(vector<pair<int,int>>&items, vector<int>&conj) {
+     item_sum_t res(0,0);
      for (int& x : conj ) {
           res.first += items[x].first; 
           res.second += items[x].second;
@@ -35,7 +34,7 @@ pair<int,int> calcular_sumas(vector<pair<int,int>>&items, vector<int>&conj) {
 }
 
 
-int calcular_precio(vector<pair<int,int>>&items, vector<int>&conj) {
+int calcular_precio(vector<item_t>&items, vector<int>&conj) {
      int res = 0;
      for (int& x : conj ) { res += items[x].first; }
      return res;
@@ -62,7 +61,7 @@ int fuerza_bruta (vector<int> precios, vector<int>weights, int W) {
      
 }
 
-int fuerza_bruta2 (vector<pair<int,int>> &items, int W) {
+int fuerza_bruta2 (vector<item_t> &items, int W) {
 
      vector<int> pre;
      vector<int> conj(items.size());
@@ -137,14 +136,14 @@ resolver_fuerza_bruta (vector<int> &pre, vector<int> &conj,
 
 void
 resolver_fuerza_bruta2 (vector<int> &pre, vector<int> &conj, int W,
-                        pair<int,int> &totales,
-                        vector<pair<int,int>> &items,
+                        item_sum_t &totales,
+                        vector<item_t> &items,
                         vector<int> &beneficios) {
 
-     pair<int,int> suma_pre = calcular_sumas(items, pre);
+     item_sum_t suma_pre = calcular_sumas(items, pre);
      if (conj.size() == 1) {
 
-          pair<int,int> suma_pre_conj= calcular_sumas(items, conj);
+          item_sum_t suma_pre_conj= calcular_sumas(items, conj);
           suma_pre_conj.first += suma_pre.first;
           suma_pre_conj.second += suma_pre.second;
           

@@ -10,13 +10,13 @@ int calcular_beneficio(vector<int>&ps,vector<int>&conj);
 int print_vec(vector<int> v, string str) ;
 
 int fuerza_bruta (vector<int> precios, vector<int>weights, int W) ;
-int fuerza_bruta2 (vector<pair<int,int>> items, int W) ;
+int fuerza_bruta2 (vector<item_t> &items, int W) ;
 
 vector<int> random_int_vector(int size);
 
-void copiar_items(vector<pair<int,int>> &items,
+void copiar_items(vector<item_t> &items,
                   vector<int> &ps, vector<int> &ws);
-vector<pair<int,int>> random_items(int cantidad) ;
+vector<item_t> random_items(int cantidad) ;
 void test0(int n, int W);
 using namespace std;
 int main (int argc, char ** argv) {
@@ -26,9 +26,10 @@ int main (int argc, char ** argv) {
 
      if (argc > 1)
           n = atoi(argv[1]);
-     for (int i = 0; i < 99999 ; i++) {
-          test0(n, W);
-     }
+     test0(n, W);
+     // for (int i = 0; i < 59999 ; i++) {
+     //      test0(n, W);
+     // }
 
 }
 
@@ -36,7 +37,7 @@ void test0(int n, int W) {
 
      vector<int> ps;
      vector<int> ws;
-     vector<pair<int,int>> items = random_items(n);
+     vector<item_t> items = random_items(n);
      copiar_items(items, ps, ws);
      // cout << "n es " << n << " W es " << W << endl;
      // int suma_precios = print_vec(ps, "precios: ");
@@ -51,7 +52,7 @@ void test0(int n, int W) {
      // vector<int> data = random_int_vector(n);
      // for (int x : data) { cout << x << " "; }
      // cout << endl;
-
+     
 
      int res2 = fuerza_bruta2(items, W);
      // cout << "con pares: " << res2 << endl;
@@ -79,22 +80,22 @@ vector<int> random_int_vector(int size) {
      return data;
 }
 
-void copiar_items(vector<pair<int,int>> &items,
+void copiar_items(vector<item_t> &items,
                   vector<int> &ps, vector<int> &ws) {
-     for (pair<int,int> x : items) {
+     for (item_t x : items) {
           ps.push_back(x.first);
           ws.push_back(x.second);
      }
 
 }
 
-vector<pair<int,int>> random_items(int cantidad) {
+vector<item_t> random_items(int cantidad) {
      default_random_engine generator;
      generator.seed(random_device()());
      uniform_int_distribution<int>
           distribution(1, 100);
      //auto cubilete = bind ( distribution, generator );
-     vector<pair<int,int>> data;
+     vector<item_t> data;
      for (int i = 0; i < cantidad; i++) {
           data.push_back(make_pair(distribution(generator),
                                    distribution(generator)));
