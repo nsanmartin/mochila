@@ -62,7 +62,7 @@ int fuerza_bruta (vector<int> precios, vector<int>weights, int W) {
      
 }
 
-int fuerza_bruta2 (vector<pair<int,int>> items, int W) {
+int fuerza_bruta2 (vector<pair<int,int>> &items, int W) {
 
      vector<int> pre;
      vector<int> conj(items.size());

@@ -1,8 +1,11 @@
+#ifndef _MOCHILA_H
+#define _MOCHILA_H
 
-namespace mochila {
-     void print_foo() {
-          std::cout << "foo" << std::endl;
-     }
+#include <utility>
+#include <vector>
 
-     
-}
+
+typedef pair<int,int> item_t;
+typedef pair<int,int> item_sum_t;
+
+#endif
