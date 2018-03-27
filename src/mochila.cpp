@@ -6,31 +6,16 @@
 
 using namespace std;
 
-int calcular_beneficio(vector<int>&ps,vector<int>&conj);
-int print_vec(vector<int> v, string str) ;
+void test1(int n, int W) ;
 
-int fuerza_bruta (vector<int> precios, vector<int>weights, int W) ;
-int fuerza_bruta2 (vector<item_t> &items, int W) ;
-
-vector<int> random_int_vector(int size);
-
-void copiar_items(vector<item_t> &items,
-                  vector<int> &ps, vector<int> &ws);
-vector<item_t> random_items(int cantidad) ;
-void test0(int n, int W);
-using namespace std;
 int main (int argc, char ** argv) {
 
-     int n = 15;
+     int n = 14;
      int W = 100;
 
      if (argc > 1)
           n = atoi(argv[1]);
      test0(n, W);
-     // for (int i = 0; i < 59999 ; i++) {
-     //      test0(n, W);
-     // }
-
 }
 
 void test0(int n, int W) {
@@ -39,23 +24,10 @@ void test0(int n, int W) {
      vector<int> ws;
      vector<item_t> items = random_items(n);
      copiar_items(items, ps, ws);
-     // cout << "n es " << n << " W es " << W << endl;
-     // int suma_precios = print_vec(ps, "precios: ");
-     // cout << "\tprecio total: " << suma_precios << endl;
-     // int suma_weights = print_vec(ws, "weights: ");
-     // cout << "\tpeso total: " << suma_weights << endl;
-     // for (int i = 0; i < 999999; i++) {
      int res = fuerza_bruta(ps, ws, W);
-     // cout << res << endl;
-
-     // cout << "random vector de n: " << n << endl;
-     // vector<int> data = random_int_vector(n);
-     // for (int x : data) { cout << x << " "; }
-     // cout << endl;
      
 
      int res2 = fuerza_bruta2(items, W);
-     // cout << "con pares: " << res2 << endl;
 
      if (res != res2) {
           cerr << "Error!!! fb y fb2 no coincieden!";
@@ -64,8 +36,22 @@ void test0(int n, int W) {
      } else {
           cout << res2 << " ";
      }
-
+     cout << endl;
+     int resmm = meet_middle (items, W) ;
+     cout << "meet middle: " << resmm;
 }
+void test1(int n, int W) {
+     vector<item_t> items;
+     items.push_back(make_pair(1, 4));
+     items.push_back(make_pair(2, 4));
+     items.push_back(make_pair(3,7));
+     items.push_back(make_pair(5,7));
+     int res2 = fuerza_bruta2(items, W);
+     int resmm = meet_middle (items, W);
+     cout << "res2:\t " << res2 << endl;
+     cout << "resmm:\t" << resmm << endl;
+}
+
 
 vector<int> random_int_vector(int size) {
      default_random_engine generator;
@@ -80,6 +66,7 @@ vector<int> random_int_vector(int size) {
      return data;
 }
 
+
 void copiar_items(vector<item_t> &items,
                   vector<int> &ps, vector<int> &ws) {
      for (item_t x : items) {
@@ -88,6 +75,8 @@ void copiar_items(vector<item_t> &items,
      }
 
 }
+
+
 
 vector<item_t> random_items(int cantidad) {
      default_random_engine generator;
