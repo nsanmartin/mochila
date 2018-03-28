@@ -55,13 +55,10 @@ void agregar_item_a_suma(item_sum_t &x, item_t const &i) {
 vector<item_sum_t>
 filtrar_mochilas_pesadas(vector<item_sum_t> &mochilas) {
      vector<item_sum_t> res;
-     if (mochilas.size() == 0) {
-          auto p = make_pair(0,0);
-          res.push_back(p);
-          return res;
-     }
-     res.push_back(mochilas[0]);
-     for (int i = 1; i < mochilas.size(); i++) {
+     auto p = make_pair(0,0);
+     res.push_back(p);
+     
+     for (int i = 0; i < mochilas.size(); i++) {
           if (res.back().first < mochilas[i].first)
                res.push_back(mochilas[i]);
      }
@@ -70,20 +67,23 @@ filtrar_mochilas_pesadas(vector<item_sum_t> &mochilas) {
 
 item_sum_t
 mochila_optima (vector<item_sum_t> A, vector<item_sum_t> B_filtrada, int W) {
+     item_sum_t mejor_B = B_filtrada.back();
      if (A.size() == 0)
-          return B_filtrada.back();
+          return mejor_B;
      item_sum_t optima = A[0];
      item_sum_t b = buscar_combinacion_optima(B_filtrada, W - optima.second);
      if (b.second + optima.second <= W) {
           optima.second += b.second;
           optima.first += b.first;
      }
+     if (optima.first < mejor_B.first)
+          optima = mejor_B;
      for (int i = 1; i < A.size(); i++) {
           item_sum_t a = A[i];
           b = buscar_combinacion_optima(B_filtrada, W - a.second);
           if (b.second + a.second <= W) {
-               b.second += a.second;
-               b.first += a.first;
+               a.second += b.second;
+               a.first += b.first;
           } else if (b.first > a.first) {
                a = b;
           }
@@ -95,49 +95,28 @@ mochila_optima (vector<item_sum_t> A, vector<item_sum_t> B_filtrada, int W) {
 }
 
 item_sum_t
-buscar_combinacion_optima(vector<item_sum_t> &B_ordenada, int tope)
+buscar_combinacion_optima(vector<item_sum_t> &B, int tope)
 {
+     // precondicion (0, 0) in B, tope >= 0
      unsigned long desde = 0;
-     unsigned long hasta = B_ordenada.size() - 1;
+     unsigned long hasta = B.size();
+     unsigned long n = hasta;
      unsigned med;
+     
+     // if (B[B.size()-1].second <= tope) {
+     //      B[B.size()-1];
+     // }
 
-     if (B_ordenada[B_ordenada.size()-1].second <= tope) {
-          B_ordenada[B_ordenada.size()-1];
-     }
-
-     while (desde < hasta) {
+     while (desde < hasta - 1) {
           med = (desde + hasta) / 2;
-          if (B_ordenada[med].second == tope)
-               return B_ordenada[med];
-          if (tope < B_ordenada[med].second) {
-               hasta = med;
-          } else  {
-               desde = med;  
+          if (B[med].second <= tope) {
+               desde = med;
           }
+          else
+               hasta = med;
      }
 
-     // if (B_ordenada.size() == 1)
-     //      return B_ordenada[0];
-     // unsigned long desde = 0;
-     // unsigned long hasta = B_ordenada.size();
-     // unsigned med;
-     // while (desde < hasta) {
-     //      med = (desde + hasta) / 2;
-     //      if (B_ordenada[med].second >= tope) {
-     //           hasta = med;
-     //      } else  {
-     //           desde = med;  
-     //      }
-     // }
-     // if (desde > hasta) {
-     //      cout << "not found!!!!!!!!\n";
-     //      abort();
-     // }
-          
-     // if ( med >= B_ordenada.size()) {
-     //      cerr << "@@@@@@@@@@@@@@@@@q  errror!\n";
-     //      cout << "med: " << med << "\tlen: "<< B_ordenada.size()<< endl;
-     //      abort();
-     // }
-     // return B_ordenada[med];
+     if (hasta < n && B[hasta].second <= tope)
+          return B[hasta];
+     return B[desde];
 }
