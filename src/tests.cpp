@@ -1,8 +1,10 @@
-
 #include <vector>
+#include <chrono>
+#include <iostream>
+
 #include "mochila.h"
 
-#include <iostream>
+
 /* #include <numeric> */
 /* #include <random> */
 
@@ -14,9 +16,30 @@ void test0(int n, int W) {
      vector<int> ws;
      vector<item_t> items = random_items(n);
      copiar_items(items, ps, ws);
+
+     auto start_fb = chrono::steady_clock::now();
      int res = fuerza_bruta(ps, ws, W);
+     auto end_fb = chrono::steady_clock::now();
+     auto diff_fb = end_fb - start_fb;
+     cout << "Tiempo utilizado por fb: "
+          << chrono::duration <double, nano> (diff_fb).count() << " ns" << endl;
+
+     auto start_fb2 = chrono::steady_clock::now();
      int res2 = fuerza_bruta2(items, W);
+     auto end_fb2 = chrono::steady_clock::now();
+     auto diff_fb2 = end_fb2 - start_fb2;
+     cout << "Tiempo utilizado por fb2: "
+          << chrono::duration <double, nano> (diff_fb2).count() << " ns" << endl;
+
+     auto start_mm = chrono::steady_clock::now();
      int resmm = meet_middle (items, W);
+     auto end_mm = chrono::steady_clock::now();
+     auto diff_mm = end_mm - start_mm;
+     cout << "Tiempo utilizado por fb: "
+          << chrono::duration <double, nano> (diff_mm).count() << " ns" << endl;
+
+
+
 
      if (res != res2) {
           cerr << "Error!!! fb y fb2 no coincieden!!!!";

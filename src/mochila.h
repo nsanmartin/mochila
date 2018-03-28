@@ -25,6 +25,15 @@ vector<item_t> random_items(int cantidad) ;
 
 int meet_middle (vector<item_t> &items, int W) ;
 
+// mochila random
+vector<int> random_int_vector(int size) ;
+void copiar_items(vector<item_t> &items,
+                  vector<int> &ps, vector<int> &ws) ;
+vector<item_t> random_items(int cantidad) ;
+
+
+
+
 // tests
 void test0(int n, int W);
 void test1(int n, int W) ;
