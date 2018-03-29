@@ -16,7 +16,7 @@ resolver_backtracking (vector<item_t> &items, int i, int W,
 int backtracking (vector<item_t> &items, int W) {
      sort(items.begin(), items.end(),
           [](item_t x, item_t y) {
-               return x.first/ x.second < y.first / y.second;
+               return x.first/ x.second > y.first / y.second;
           });
      
      item_sum_t mochila_actual = make_pair(0,0);
@@ -43,13 +43,14 @@ resolver_backtracking (vector<item_t> &items, int i, int W,
 {
      // poda por optimalidad: "ya saque demasiado valor como para
      // alcanzar el mejor observado"
-     int beneficio_no_observado = totales.first - suma_hasta_aca.first;
-     int beneficio_en_mochila =
-          suma_hasta_aca.first - mochila_actual.first;
-     agregar_item_a_suma(suma_hasta_aca, items[i]);
-     int mejor_beneficio_obervado = totales.first - mejor.first;
-     if (beneficio_no_observado + beneficio_en_mochila
-         < mejor_beneficio_obervado)
+     if (mochila_actual.first > mejor.first)
+          return;
+
+     int benef_por_peso_i = items[i].first / items[i].second;
+     int peso_disponible
+          = W + mochila_actual.second - suma_hasta_aca.second;
+     if (benef_por_peso_i * peso_disponible + mejor.first
+         < mochila_actual.first)
           return;
      if (i == items.size() - 1) {  // ultimo
 
@@ -82,6 +83,10 @@ resolver_backtracking (vector<item_t> &items, int i, int W,
           return;
      
      agregar_item_a_suma(actual_copia, items[i]);
+     //?
+     if (actual_copia.first > mejor.first)
+          return;
+
      resolver_backtracking(
           items, i + 1, W, actual_copia, mejor, totales, suma_hasta_aca);
      return;

@@ -210,21 +210,22 @@ int fuerza_bruta3 (vector<item_t> &items, int W) {
 }
 
 int fuerza_bruta4 (vector<item_t> &items, int W) {
-     sort(items.begin(), items.end(),
-          [](item_t x, item_t y) {
-               return x.first/ x.second < y.first / y.second;
-          });
+     // sort(items.begin(), items.end(),
+     //      [](item_t x, item_t y) {
+     //           return x.first/ x.second < y.first / y.second;
+     //      });
      
      item_sum_t mochila_actual = make_pair(0,0);
-     item_sum_t mejor;
      item_sum_t totales;
      for (int i = 0; i < items.size(); i ++) {
           agregar_item_a_suma(totales, items[i]);
-          if (mejor.second + items[i].second <= W)
-               agregar_item_a_suma (mejor, items[i]);
+          // if (mejor.second + items[i].second <= W)
+          //      agregar_item_a_suma (mejor, items[i]);
      }
-     mejor.first = totales.first - mejor.first;
-     mejor.second = totales.second - mejor.second;
+     item_sum_t mejor(totales);
+
+     // mejor.first = totales.first - mejor.first;
+     // mejor.second = totales.second - mejor.second;
      resolver_fuerza_bruta4(items, 0, W, mochila_actual, mejor, totales);
      return totales.first - mejor.first;
 }

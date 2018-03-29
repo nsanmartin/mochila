@@ -10,10 +10,10 @@ void time1(int n, int W) ;
 
 
 int main (int argc, char ** argv) {
-     cout << "steady_clock"
-          << chrono::steady_clock::period::num << endl;
-     cout << chrono::steady_clock::period::den << endl;
-     cout << "steady = " << boolalpha
+     cout << "steady_clock "
+          << chrono::steady_clock::period::num 
+          << chrono::steady_clock::period::den 
+          << "steady = " << boolalpha
           << chrono::steady_clock::is_steady << endl << endl;
 
      int n = 2;

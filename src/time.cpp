@@ -93,7 +93,7 @@ void time1(int n, int W) {
      auto end_fb4 = chrono::steady_clock::now();
      auto diff_fb4 = end_fb4 - start_fb4;
      cout << "Tiempo utilizado por fb4:\t "
-          << chrono::duration <double, nano> (diff_fb4).count() << " ns"
+          << chrono::duration <double, milli> (diff_fb4).count() << " ms"
           << endl;
 
      auto start_mm = chrono::steady_clock::now();
@@ -101,21 +101,32 @@ void time1(int n, int W) {
      auto end_mm = chrono::steady_clock::now();
      auto diff_mm = end_mm - start_mm;
      cout << "Tiempo utilizado por mm:\t "
-          << chrono::duration <double, nano> (diff_mm).count() << " ns"
+          << chrono::duration <double, milli> (diff_mm).count() << " ms"
           << endl;
 
+     
+     auto start_bt = chrono::steady_clock::now();
+     int resbt = backtracking (items, W);
+     auto end_bt = chrono::steady_clock::now();
+     auto diff_bt = end_bt - start_bt;
+     cout << "Tiempo utilizado por bt:\t "
+          << chrono::duration <double, milli> (diff_bt).count() << " ms"
+          << endl;
 
+     
+     
 
                     
-     if (res4 != resmm) {
-         cerr << "Error!!! fb4 y meet no coincieden!!!!";
-         cerr << "res: " << res4 << " resmm: " << resmm << endl;
+     if (resbt != res4 || resbt != resmm ) {
+         cerr << "Error!!! fb4 , meet y bt no coincieden!!!!";
+         cerr << "res: " << res4 << " resmm: " << resmm
+              << "resbt: " << resbt << endl;
          for (auto x : items)
               cout << x.first << "/" << x.second << " "<<  endl ;
          exit(1);
      } 
 
-
-          cout << resmm << " " << endl;
+     
+     cout << resmm << " " << endl;
 }
 
