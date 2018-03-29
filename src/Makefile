@@ -1,8 +1,16 @@
 
-OBJECTS = mochila-fuerza-bruta.o mochila-meet-middle.o tests.o mochila-aux.cpp
+OBJECTS = mochila-fuerza-bruta.o mochila-meet-middle.o tests.o \
+			mochila-backtracking.o mochila-aux.cpp time.o
 CFLAGS = -g -std=c++11
 %.o: %.cpp
 	g++ -g -std=c++11 -c -o $@ $<
+
+
+tbacktracking: $(OBJECTS)
+	g++ -o $@ $(CFLAGS) $@.cpp $^
+
+tfuerza_bruta_4: $(OBJECTS)
+	g++ -o $@ $(CFLAGS) $@.cpp $^
 
 tfuerza_bruta_3: $(OBJECTS)
 	g++ -o $@ $(CFLAGS) $@.cpp $^
@@ -10,8 +18,8 @@ tfuerza_bruta_3: $(OBJECTS)
 tmeet_in_the_middle: $(OBJECTS)
 	g++ -o $@ $(CFLAGS) $@.cpp  $^
 
-tests: mochila-fuerza-bruta.o mochila-meet-middle.o tests.o
-	g++ -g -std=c++11 mochila.cpp $^
+ttime: $(OBJECTS)
+	g++  -o $@ $(CFLAGS) ttime.cpp $^
 
 
 fuerza-bruta: mochila-fuerza-bruta.o mochila-meet-middle.o

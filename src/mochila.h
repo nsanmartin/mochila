@@ -17,7 +17,8 @@ int print_items(vector<item_t> v);
 int fuerza_bruta (vector<int> precios, vector<int>weights, int W) ;
 int fuerza_bruta2 (vector<item_t> &items, int W) ;
 int fuerza_bruta3 (vector<item_t> &items, int W) ;
-
+int fuerza_bruta4 (vector<item_t> &items, int W) ;
+int backtracking  (vector<item_t> &items, int W) ;
 vector<int> random_int_vector(int size);
 
 void copiar_items(vector<item_t> &items,
