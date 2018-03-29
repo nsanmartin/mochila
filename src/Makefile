@@ -1,11 +1,14 @@
 
-OBJECTS = mochila-fuerza-bruta.o mochila-meet-middle.o tests.o mochila_random.cpp
-
+OBJECTS = mochila-fuerza-bruta.o mochila-meet-middle.o tests.o mochila-aux.cpp
+CFLAGS = -g -std=c++11
 %.o: %.cpp
 	g++ -g -std=c++11 -c -o $@ $<
 
+tfuerza_bruta_3: $(OBJECTS)
+	g++ -o $@ $(CFLAGS) $@.cpp $^
+
 tmeet_in_the_middle: $(OBJECTS)
-	g++ -o $@ -g -std=c++11 $@.cpp  $^
+	g++ -o $@ $(CFLAGS) $@.cpp  $^
 
 tests: mochila-fuerza-bruta.o mochila-meet-middle.o tests.o
 	g++ -g -std=c++11 mochila.cpp $^

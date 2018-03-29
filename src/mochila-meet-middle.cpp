@@ -45,10 +45,6 @@ conjunto_de_partes(int desde, int hasta, vector<item_t>&items, int W) {
      return partes;
 }
 
-void agregar_item_a_suma(item_sum_t &x, item_t const &i) {
-     x.first += i.first;
-     x.second += i.second;
-};
 
 
 // ver paper [2]
