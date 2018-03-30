@@ -1,9 +1,20 @@
 #include <random>
 #include <iostream>
 #include "mochila.h"
-
+#include <string>
+#include <fstream>
 using namespace std;
 
+
+int rand_int_mod(int n) {
+     default_random_engine generator;
+     generator.seed(random_device()());
+     uniform_int_distribution<int>
+          distribution(1, n);
+
+     return distribution(generator);
+     
+}
 vector<int> random_int_vector(int size) {
      default_random_engine generator;
      generator.seed(random_device()());
@@ -64,4 +75,41 @@ int print_items(vector<item_t> v) {
      }
      cout << endl;
      return suma;
+}
+
+void leer_parametros(int &W, vector<item_t> &items, string filename) {
+     int n, i = 0;
+     string line;
+     
+     ifstream file;
+     file.open(filename);
+     if (!file) {
+          cerr << "No se pudo leer " << filename << endl;
+          exit(1);
+     }
+     
+     if (!(file >> n) ) {
+          cerr << "Falta n en " << filename << endl;
+          exit(1);
+
+     }
+     if (!(file >> W)) {
+          cerr << "Falta W en " << filename << endl;
+          exit(1);
+     }
+
+
+     int w, p;
+     while (file >> p && file >> w) {
+          if (i++ == n) {
+               cerr << "advertencia: hay mas numeros en el archivo\n"
+                    << "             que los que dice su primera linea"
+                    << endl;
+               break;
+          }
+          items.push_back(make_pair(w,p));
+     }
+
+     if (i != n )
+          cerr << "Faltan numeros o no pueden leerse\n";
 }

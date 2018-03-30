@@ -6,8 +6,8 @@
 using namespace std;
 
 typedef struct mochila {
-     item_sum_t actual;
-     item_sum_t mejor;
+     item_sum_t afuera;
+     item_sum_t adentro;
      item_sum_t total;
 } mochila;
 
@@ -18,8 +18,8 @@ resolver_backtracking (vector<item_t> &items, int i, int W,
                        item_sum_t &totales);
 
 void
-resolver_backtracking2 (vector<item_t> &items, int i, int W,
-                        mochila &m, vector<item_sum_t> &acum);
+resolver_backtracking2 (vector<item_t> &items, int i, int W, mochila &m,
+                        item_sum_t &mejor);
 
 
 
@@ -29,23 +29,21 @@ int backtracking2 (vector<item_t> &items, int W) {
                return x.first > y.first;
           });
      mochila m;
-     m.actual = make_pair(0,0);
+     m.afuera = make_pair(0,0);
      //item_sum_t total;
-     vector<item_sum_t>acum;
-     m.mejor = make_pair(0,0);
+     item_sum_t mejor = make_pair(0,0);
 
      for (int i = 0; i < items.size(); i ++) {
           agregar_item_a_suma(m.total, items[i]);
-          acum.push_back(m.total);
-          if (m.mejor.second + items[i].second <= W)
-               agregar_item_a_suma (m.mejor, items[i]);
+          if (mejor.second + items[i].second <= W)
+               agregar_item_a_suma (mejor, items[i]);
      }
      if (m.total.second <= W) return m.total.first;
-     m.mejor.first = m.total.first - m.mejor.first;
-     m.mejor.second = m.total.second - m.mejor.second;
-     resolver_backtracking2(items, 0, W, m, acum);
+     mejor.first = m.total.first - mejor.first;
+     mejor.second = m.total.second - mejor.second;
+     resolver_backtracking2(items, 0, W, m, mejor);
 
-     return m.total.first - m.mejor.first;
+     return m.total.first - mejor.first;
 }
 
 int backtracking (vector<item_t> &items, int W) {
@@ -80,7 +78,7 @@ resolver_backtracking (vector<item_t> &items, int i, int W,
      // alcanzar el mejor observado"
      if (actual.first > mejor.first)
           return;
-
+     
      if (i == items.size() - 1) {  // ultimo
           item_sum_t sacando_i(actual);
           agregar_item_a_suma(sacando_i, items[i]); // "saco i"
@@ -120,51 +118,40 @@ resolver_backtracking (vector<item_t> &items, int i, int W,
 }
 
 void
-resolver_backtracking2  (vector<item_t> &items, int i, int W,
-                         mochila &m, vector<item_sum_t> &acum)
+resolver_backtracking2 (vector<item_t> &items, int i, int W, mochila &m,
+                        item_sum_t &mejor)
 {
      // poda por optimalidad: "ya saque demasiado valor como para
      // alcanzar el mejor observado"
-     if (m.actual.first > m.mejor.first) {
+     if (m.afuera.first > mejor.first || m.adentro.second > W) {
           return;
      }
      if (i == items.size() - 1) {  // ultimo
-          item_sum_t sacando_i(m.actual);
+          item_sum_t sacando_i(m.afuera);
           agregar_item_a_suma(sacando_i, items[i]); // "saco i"
           // ni sacando i estoy debajo del tope.
           if (W < m.total.second - sacando_i.second) 
                return;
 
           // mejor es menor, porque es lo que se saca
-          if (m.mejor.first > sacando_i.first)
-               m.mejor = sacando_i;
+          if (mejor.first > sacando_i.first)
+               mejor = sacando_i;
 
           // dejando i
-          if (W < m.total.second - m.actual.second)
+          if (W < m.total.second - m.afuera.second)
                return;
-          if (m.mejor.first > m.actual.first)
-               m.mejor = m.actual;
+          if (mejor.first > m.afuera.first)
+               mejor = m.afuera;
           return; 
      }
-     item_sum_t actual_copia(m.actual);
-     // aca "no saco" el i-esimo elemento
-     if (acum[i].second - m.actual.second <= W) 
-          resolver_backtracking2(
-               items, i + 1, W, m, acum);
 
-     // aca si saco el i-esimo, solo si no saque suficiente como para
-     // que seguir sacando perjudique el beneficio 
-     // if (total.second - actual_copia.second <= W)
-     //      return;
-     
-     agregar_item_a_suma(actual_copia, items[i]);
-     m.actual = actual_copia;
-     //?
-     // if (actual_copia.first > mejor.first)
-     //      return;
+     mochila m_copia(m);
 
-     resolver_backtracking2(
-          items, i + 1, W, m, acum);
+     agregar_item_a_suma(m.adentro, items[i]);
+     resolver_backtracking2(items, i + 1, W, m, mejor);
+
+     agregar_item_a_suma(m_copia.afuera, items[i]);
+     resolver_backtracking2(items, i + 1, W, m_copia, mejor);
      return;
 }
 

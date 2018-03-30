@@ -4,6 +4,7 @@
 #include <utility>
 #include <vector>
 #include <string>
+#include <fstream>
 
 typedef std::pair<int,int> item_t;
 typedef std::pair<int,int> item_sum_t;
@@ -31,6 +32,7 @@ vector<item_t> random_items(int cantidad) ;
 int meet_middle (vector<item_t> &items, int W) ;
 
 // mochila random
+int rand_int_mod(int n) ;
 vector<int> random_int_vector(int size) ;
 void copiar_items(vector<item_t> &items,
                   vector<int> &ps, vector<int> &ws) ;
@@ -38,6 +40,10 @@ vector<item_t> random_items(int cantidad) ;
 
 void agregar_item_a_suma(item_sum_t &x, item_t const &i) ;
 
+
+//io
+
+void leer_parametros(int &W, vector<item_t> &items, string filename) ;
 
 
 // tests
@@ -47,5 +53,7 @@ void test2(int n, int W) ;
 void test3(int n, int W) ;
 void test4(int n, int W) ;
 void test5(int n, int W) ;
+
+void comparar_algotirmos(int W, vector<item_t> items) ;
 
 #endif

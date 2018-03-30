@@ -6,6 +6,8 @@ CFLAGS = -g -std=c++11
 	g++ -g -std=c++11 -c -o $@ $<
 
 
+tentrada-salida: $(OBJECTS)
+	g++ -o $@ $(CFLAGS) $@.cpp $^
 tbacktracking: $(OBJECTS)
 	g++ -o $@ $(CFLAGS) $@.cpp $^
 
