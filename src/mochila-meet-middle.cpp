@@ -33,6 +33,8 @@ vector<item_sum_t>
 conjunto_de_partes(int desde, int hasta, vector<item_t>&items, int W) {
      vector<item_sum_t> partes;
      for (int i = desde; i < hasta; i++) {
+          if (items[i].second > W)
+               continue;
           int partes_size = partes.size();
           partes.push_back(items[i]);
           for (int j = 0; j < partes_size; j++) {

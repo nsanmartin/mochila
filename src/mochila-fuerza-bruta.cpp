@@ -309,8 +309,8 @@ resolver_fuerza_bruta4 (vector<item_t> &items, int i, int W,
 
      // aca si saco el i-esimo, solo si no saque suficiente como para
      // que seguir sacando perjudique el beneficio 
-     if (totales.second - actual_copia.second <= W)
-          return;
+     // if (totales.second - actual_copia.second <= W)
+     //      return;
      
      agregar_item_a_suma(actual_copia, items[i]);
      resolver_fuerza_bruta4(

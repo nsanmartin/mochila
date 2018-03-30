@@ -1,7 +1,7 @@
 
 OBJECTS = mochila-fuerza-bruta.o mochila-meet-middle.o tests.o \
 			mochila-backtracking.o mochila-aux.cpp time.o
-CFLAGS = -g -std=c++11
+CFLAGS = -g -std=c++11 
 %.o: %.cpp
 	g++ -g -std=c++11 -c -o $@ $<
 

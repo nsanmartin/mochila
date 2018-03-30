@@ -1,7 +1,7 @@
 #include <vector>
 #include <chrono>
 #include <iostream>
-
+#include <algorithm>
 #include "mochila.h"
 
 
@@ -82,19 +82,17 @@ void time0(int n, int W) {
 
 void time1(int n, int W) {
 
-     vector<int> ps;
-     vector<int> ws;
      vector<item_t> items = random_items(n);
-     copiar_items(items, ps, ws);
+     // sort(items.begin(), items.end(),
+     //      [](item_t x, item_t y) {
+     //           return  x.first > y.first;
+     //           //return x.first / x.second > y.first / y.second;
+     //      });
+     for (int i = 0; i < items.size(); i++) {
+          cout << items[i].first << "/" << items[i].second << " ";
+     }
+     cout << endl;
 
-
-     auto start_fb4 = chrono::steady_clock::now();
-     int res4 = fuerza_bruta4(items, W);
-     auto end_fb4 = chrono::steady_clock::now();
-     auto diff_fb4 = end_fb4 - start_fb4;
-     cout << "Tiempo utilizado por fb4:\t "
-          << chrono::duration <double, milli> (diff_fb4).count() << " ms"
-          << endl;
 
      auto start_mm = chrono::steady_clock::now();
      int resmm = meet_middle (items, W);
@@ -113,17 +111,33 @@ void time1(int n, int W) {
           << chrono::duration <double, milli> (diff_bt).count() << " ms"
           << endl;
 
-     
-     
+     auto start_bt2 = chrono::steady_clock::now();
+     int resbt2 = backtracking2 (items, W);
+     auto end_bt2 = chrono::steady_clock::now();
+     auto diff_bt2 = end_bt2 - start_bt2;
+     cout << "Tiempo utilizado por bt2:\t "
+          << chrono::duration <double, milli> (diff_bt2).count() << " ms"
+          << endl;
 
+     auto start_fb4 = chrono::steady_clock::now();
+     int res4 = fuerza_bruta4(items, W);
+     auto end_fb4 = chrono::steady_clock::now();
+     auto diff_fb4 = end_fb4 - start_fb4;
+     cout << "Tiempo utilizado por fb4:\t "
+          << chrono::duration <double, milli> (diff_fb4).count() << " ms"
+          << endl;
+
+     
+     
                     
-     if (resbt != res4 || resbt != resmm ) {
-         cerr << "Error!!! fb4 , meet y bt no coincieden!!!!";
-         cerr << "res: " << res4 << " resmm: " << resmm
-              << "resbt: " << resbt << endl;
-         for (auto x : items)
-              cout << x.first << "/" << x.second << " "<<  endl ;
-         exit(1);
+     if (resbt != res4 || resbt != resmm || resbt != resbt2) {
+          cerr << "Error!!! fb4 , meet y bt no coincieden!!!!" << endl;
+          cerr << "resfb: " << res4 << "\t resmm: " << resmm
+               << "\t resbt: " << resbt << "\t resbt2: " << resbt2
+               << endl;
+          for (auto x : items)
+               cout << x.first << "/" << x.second << " "<<  endl ;
+          exit(1);
      } 
 
      

@@ -17,7 +17,7 @@ int main (int argc, char ** argv) {
           << chrono::steady_clock::is_steady << endl << endl;
 
      int n = 2;
-     int W = 100;
+     int W = 500;
      if (argc > 1) {
           n = atoi(argv[1]);
           time1(n, W);

@@ -19,6 +19,8 @@ int fuerza_bruta2 (vector<item_t> &items, int W) ;
 int fuerza_bruta3 (vector<item_t> &items, int W) ;
 int fuerza_bruta4 (vector<item_t> &items, int W) ;
 int backtracking  (vector<item_t> &items, int W) ;
+int backtracking2  (vector<item_t> &items, int W) ;
+
 vector<int> random_int_vector(int size);
 
 void copiar_items(vector<item_t> &items,
