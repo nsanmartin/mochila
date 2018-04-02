@@ -1,0 +1,9 @@
+README
+
+Las muestras tienen la forma:
+
+n W tiempo1 tiempo2 tiempo3 tiempo4
+
+donde n es la cantidad de elementos, W es la capacidad de la mochila,
+y los tiempos corresponden a la medicion de los algoritmos, en este
+caso 4.

@@ -10,6 +10,12 @@
 
 using namespace std;
 
+void test_cons(int n, int W) {
+     vector<item_t> items = random_items(n);
+     muestrear_algoritmos(W, items);
+     
+}
+
 void test0(int n, int W) {
 
      vector<int> ps;

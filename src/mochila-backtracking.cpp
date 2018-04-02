@@ -24,13 +24,15 @@ resolver_backtracking2 (vector<item_t> &items, int i, int W, mochila &m,
 
 
 int backtracking2 (vector<item_t> &items, int W) {
+     if (items.size() == 0)
+          return 0;
      sort(items.begin(), items.end(),
           [](item_t x, item_t y) {
                return x.first > y.first;
           });
      mochila m;
      m.afuera = make_pair(0,0);
-     //item_sum_t total;
+
      item_sum_t mejor = make_pair(0,0);
 
      for (int i = 0; i < items.size(); i ++) {

@@ -21,13 +21,15 @@ int fuerza_bruta3 (vector<item_t> &items, int W) ;
 int fuerza_bruta4 (vector<item_t> &items, int W) ;
 int backtracking  (vector<item_t> &items, int W) ;
 int backtracking2  (vector<item_t> &items, int W) ;
+int dinamica (vector<item_t> &items, int W);
 
 vector<int> random_int_vector(int size);
 
 void copiar_items(vector<item_t> &items,
                   vector<int> &ps, vector<int> &ws);
 
-vector<item_t> random_items(int cantidad) ;
+vector<item_t> random_items(int cantidad);
+vector<item_t> random_items(int cantidad, int pesomax);
 
 int meet_middle (vector<item_t> &items, int W) ;
 
@@ -44,6 +46,8 @@ void agregar_item_a_suma(item_sum_t &x, item_t const &i) ;
 //io
 
 void leer_parametros(int &W, vector<item_t> &items, string filename) ;
+void leer_parametros_stream(int &W, vector<item_t> &items,
+                            istream & file) ;
 
 
 // tests
@@ -55,5 +59,6 @@ void test4(int n, int W) ;
 void test5(int n, int W) ;
 
 void comparar_algotirmos(int W, vector<item_t> items) ;
+void muestrear_algoritmos(int W, vector<item_t> items) ;
 
 #endif

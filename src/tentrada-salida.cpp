@@ -10,15 +10,19 @@ int main(int argc, char** argv) {
      int W;
      vector<item_t> items;
      if (argc == 1) {
-          cerr << "falta nombre de archivo\n";
-          exit(1);
-     }
-     string filename = argv[1];
+          leer_parametros_stream(W, items, cin);
+     } else {
+          string filename = argv[1];
+          ifstream file;
+          file.open(filename);
+          if (!file) {
+               cerr << "No se pudo leer " << filename << endl;
+               exit(1);
+          }
 
-     leer_parametros(W, items, filename);
-     for (item_t x : items) {
-          cout << x.first << "/" << x.second << endl;
+          leer_parametros_stream(W, items, file);
      }
-
-     comparar_algotirmos(W, items);
+     cout << items.size() << " " << W << " ";
+     muestrear_algoritmos(W, items);
+     cout << endl;
 }

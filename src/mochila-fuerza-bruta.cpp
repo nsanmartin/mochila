@@ -214,7 +214,8 @@ int fuerza_bruta4 (vector<item_t> &items, int W) {
      //      [](item_t x, item_t y) {
      //           return x.first/ x.second < y.first / y.second;
      //      });
-     
+     if (items.size() == 0)
+          return 0;
      item_sum_t mochila_actual = make_pair(0,0);
      item_sum_t totales;
      for (int i = 0; i < items.size(); i ++) {

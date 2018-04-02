@@ -1,8 +1,19 @@
 #include <random>
-
+#include <iostream>
 #include "mochila.h"
+#include <string>
+#include <fstream>
+using namespace std;
 
+int rand_int_mod(int n) {
+     default_random_engine generator;
+     generator.seed(random_device()());
+     uniform_int_distribution<int>
+          distribution(1, n);
 
+     return distribution(generator);
+     
+}
 vector<int> random_int_vector(int size) {
      default_random_engine generator;
      generator.seed(random_device()());
@@ -15,17 +26,6 @@ vector<int> random_int_vector(int size) {
      }
      return data;
 }
-
-
-void copiar_items(vector<item_t> &items,
-                  vector<int> &ps, vector<int> &ws) {
-     for (item_t x : items) {
-          ps.push_back(x.first);
-          ws.push_back(x.second);
-     }
-
-}
-
 
 
 vector<item_t> random_items(int cantidad) {
