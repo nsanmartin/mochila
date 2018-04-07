@@ -137,5 +137,6 @@ void muestrear_din(int W, vector<item_t> items) {
      auto end_din = chrono::steady_clock::now();
      auto diff_din = end_din - start_din;
      cout << chrono::duration <double, milli> (diff_din).count() << " ";
+     cout << resdin ;
      cout << endl;
  }

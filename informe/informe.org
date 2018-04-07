@@ -1,6 +1,7 @@
 #+TITLE:     El problema de la mochila
 #+AUTHOR: Nicolás San Martín
 #+LANGUAGE:  es
+#+LaTeX_HEADER: \usepackage[margin=2cm]{geometry}
 # #+LaTeX_CLASS: smarticle
 # #+LaTeX_HEADER: \pdfmapfile{/home/neilsen/texmf/fonts/map/dvips/libertine/libertine.map}
 #+LaTeX_HEADER: \usepackage{amsmath}
@@ -8,22 +9,107 @@
 #+LaTeX_HEADER: \usepackage[noend]{algpseudocode}
 #+EXPORT_SELECT_TAGS: export
 #+EXPORT_EXCLUDE_TAGS: noexport
-# #+OPTIONS: H:2 num:nil toc:nil \n:nil @:t ::t |:t ^:{} _:{} *:t TeX:t LaTeX:t
-# #+STARTUP: showall
 
-# #+LaTeX_HEADER:\makeatletter\def\BState{\State\hskip-\ALG@thistlm}\makeatother
+* Introducción
+En el presente trabajo práctico se comparan cuatro algoritos que
+obtienen la solución al "problema de la mochila" mediante diferentes
+estrategias o técnicas algoritmicas. La solución a este problema tiene
+diversas aplicaciones. Por ejemplo, una empresa dedicada al transporte
+de bienes podría querer maximizar el beneficio obtenido al realizar
+una carga. O, dada una estimación de la renta futura asociada a una
+serie de activos financieros, alguien podría querer obtener una
+"cartera de inversiones" donde la ganancia sea mayor, etc.
+
+En primer lugar se muestran los algoritmos, justificando su correctiud
+y mostrando su complejidad. Luego se realizan mediciones de sus
+respectivos tiempos para diversos inputs.
+
+** Formulación del problema
+Dados un conjunto $S$ de items a los que se asocia un /beneficio/ $p_i$
+y un /tamaño/ $w_i$ y una mochila con capacidad máxima $W$, se quiere
+encontrar el valor máximo obtenible al sumar los beneficios de items de
+algún subconjunto de $S$ tal que la suma de sus items sea menor o
+igual a $W$, es decir, se busca maximizar
+$$
+\sum_{i=1}^{n} x_ip_i
+$$
+con la condición de que se cumpla asimismo
+$$
+\sum_{i=1}^{n} x_iw_i \leq W
+$$
+donde $p_i > 0$, $p_i > 0$, $i = 1, \dots, n$ son el peso y el
+beneficio de los elementos de $S$ y $x_i \in \{0,1\}$.
+
+** Ejemplo
+Por ejemplo, supongamos que en $S$ hay $4$ items cuyos tamaños son $7,
+2, 8, 8$, sus beneficios asociados $4, 5, 2, 7$ y que $W = 12$. La
+suma de todos los beneficios es $18$. Pero como la suma de los
+beneficios es igual a $25$, mayor que $W$, entonces esa solución no
+sirve. De los subconjuntos que se ajustan a la restricción
+impuesta, para aquel cuya suma de beneficios es máxima esta suma
+equivale a 12.
+
+* Algoritmos
+** Fuerza bruta
+El primer algoritmo que presentamos es el que procede por /fuerza
+bruta/. Esto significa que por cada uno de los resultados posibles, es
+decir, cada uno de los subconjuntos de $S$, se verifica la condición
+impuesta al peso y, para los casos en que se cumple, se mantiene el
+máximo beneficio.
+
+El algoritmo implementado es recursivo. Por cada item $e \in S$
+considera recursivamente los subconjuntos $S' \subset S$ tales que
+$e \in S'$ y $e \not \in S'$
+
+Se utilizan los siguientes tipos: ~item~ es ~par<int,int>~, ~item_sum~
+es también ~par<int,int>~, ~mochila~ es ~tupla<item_sum,item_sum>~. El
+tipo ~item~ representa un elemento de $S$. El tipo ~item_sum~
+representa la sumatoria de beneficios y de pesos de un subconjunto de
+$S$. El tipo ~mochila~ contiene, por un lado, la información
+correspondiente al contenido de una mochila, por otro lado el
+contenido que se ha decidido excluir de una mochila. Esto debido a que
+de este modo es posible determinar facilmente, por un lado, si una
+mochila en un momento dado tiene un peso permitodo y, por otro, si su
+beneficio acumulado es mejor que el de otra mochila.
+
+*** Pseudocódico
 
 \begin{algorithmic}[1]
-\Procedure{MyProcedure}{}
-\State $\textit{stringlen} \gets \text{length of }\textit{string}$
-\State $i \gets \textit{patlen}$
-\If {$\textit{string}(i) = \textit{path}(j)$}
-\State $j \gets j-1$.
-\State $i \gets i-1$.
-\State \textbf{goto} \emph{loop}.
-\State \textbf{close};
+\Procedure{fuerza\_bruta}{$items, W, mochila, solucion$}
+\If {len(items) = 0}
+\If  {mejor\_solucion(mochila, solucion, W)}
+\State solucion $\gets$ mochila
 \EndIf
-\State $i \gets i+\max(\textit{delta}_1(\textit{string}(i)),\textit{delta}_2(j))$.
-\State \textbf{goto} \emph{top}.
+\Else 
+\State mochila\_con\_iesimo $\gets$ agregar\_item(first(items), mochila)
+\State mochila\_sin\_iesimo $\gets$ no\_agregar\_item(first(items), mochila)
+\State fuerza\_bruta(siguientes(items), W, mochila\_sin\_iesimo, solucion)
+\State fuerza\_bruta(siguientes(items), W, mochila\_con\_iesimo, solucion)
+\EndIf
 \EndProcedure
 \end{algorithmic}
+
+
+** Backtracking
+
+algorithmicx
+
+Example:
+
+# \begin{algorithm}
+#     \caption{Euclid's algorithm}
+#     \label{euclid}
+    \begin{algorithmic}[1] 
+        \Procedure{Euclid}{$a,b$} \Comment{The g.c.d. of a and b}
+            \State $r\gets a \bmod b$
+            \While{$r\not=0$} \Comment{We have the answer if r is 0}
+                \State $a \gets b$
+                \State $b \gets r$
+                \State $r \gets a \bmod b$
+            \EndWhile\label{euclidendwhile}
+            \State \textbf{return} $b$\Comment{The gcd is b}
+        \EndProcedure
+    \end{algorithmic}
+# \end{algorithm}
+** Meet in the middle
+** Programación dinámica

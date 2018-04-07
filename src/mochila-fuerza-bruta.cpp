@@ -30,14 +30,17 @@ resolver_fuerza_bruta (vector<item_t> &items, int i, int W, mochila &m,
                        int &menor_beneficio_sacado)
 {
      if (i == 0) {// ultimo
-          if (m.afuera.first < menor_beneficio_sacado && m.adentro.second <= W)
+          if (m.afuera.first < menor_beneficio_sacado &&
+              m.adentro.second <= W)
                menor_beneficio_sacado  = m.afuera.first;
      } else {
           mochila m_sin_iesimo(m);
           agregar_item_a_suma(m.adentro, items[i - 1]);
-          resolver_fuerza_bruta(items, i - 1, W, m, menor_beneficio_sacado);
+          resolver_fuerza_bruta(items, i - 1, W, m,
+                                menor_beneficio_sacado);
           agregar_item_a_suma(m_sin_iesimo.afuera, items[i - 1]);
-          resolver_fuerza_bruta(items, i - 1, W, m_sin_iesimo, menor_beneficio_sacado);
+          resolver_fuerza_bruta(items, i - 1, W, m_sin_iesimo,
+                                menor_beneficio_sacado);
      }
 }
 
