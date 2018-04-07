@@ -9,13 +9,19 @@
 typedef std::pair<int,int> item_t;
 typedef std::pair<int,int> item_sum_t;
 
+typedef struct mochila {
+     item_sum_t afuera;
+     item_sum_t adentro;
+     item_sum_t total;
+} mochila;
+
 using namespace std;
 
 int calcular_beneficio(vector<int>&ps,vector<int>&conj);
 int print_vec(vector<int> v, string str) ;
 int print_items(vector<item_t> v);
 
-int fuerza_bruta (vector<int> precios, vector<int>weights, int W) ;
+int fuerza_bruta(vector<item_t> &items, int W) ;
 int fuerza_bruta2 (vector<item_t> &items, int W) ;
 int fuerza_bruta3 (vector<item_t> &items, int W) ;
 int fuerza_bruta4 (vector<item_t> &items, int W) ;

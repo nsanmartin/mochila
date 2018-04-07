@@ -1,35 +1,27 @@
 
-OBJECTS = mochila-fuerza-bruta.o mochila-meet-middle.o tests.o \
-			mochila-backtracking.o mochila-dinamica.o mochila-aux.cpp \
-			time.o entrada-salida.cpp
+OBJECTS = mochila-fuerza-bruta.o mochila-meet-middle.o \
+			mochila-backtracking.o mochila-dinamica.o mochila-aux.o \
+			time.o entrada-salida.o 
 CFLAGS = -g -std=c++11 
 %.o: %.cpp
 	g++ -g -std=c++11 -c -o $@ $<
 
 
-tdinamica: $(OBJECTS)
-	g++ -o build/$@ $(CFLAGS) $@.cpp $^
+ttime: $(OBJECTS)
+	g++  -o build/$@ $(CFLAGS) $@.cpp $^
+
+ttime-bt-mm-din: $(OBJECTS)
+	g++  -o build/$@ $(CFLAGS) $@.cpp $^
+
+ttime-bt-din: $(OBJECTS)
+	g++  -o build/$@ $(CFLAGS) $@.cpp $^
 
 tentrada-salida: $(OBJECTS)
-	g++ -o build/$@ $(CFLAGS) $@.cpp $^
-tbacktracking: $(OBJECTS)
-	g++ -o build/$@ $(CFLAGS) $@.cpp $^
+	g++  -o build/$@ $(CFLAGS) $@.cpp $^
 
-tfuerza_bruta_4: $(OBJECTS)
-	g++ -o build/$@ $(CFLAGS) $@.cpp $^
+tdin: $(OBJECTS)
+	g++  -o build/$@ $(CFLAGS) $@.cpp $^
 
-tfuerza_bruta_3: $(OBJECTS)
-	g++ -o build/$@ $(CFLAGS) $@.cpp $^
-
-tmeet_in_the_middle: $(OBJECTS)
-	g++ -o build/$@ $(CFLAGS) $@.cpp  $^
-
-ttime: $(OBJECTS)
-	g++  -o build/$@ $(CFLAGS) ttime.cpp $^
-
-
-fuerza-bruta: mochila-fuerza-bruta.o mochila-meet-middle.o
-	g++ -o build/$@ -g -std=c++11 mochila.cpp $^
 
 clean:
 	find . -name "*.o" -exec rm {} \;

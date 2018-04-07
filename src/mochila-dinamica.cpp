@@ -15,10 +15,6 @@ public:
           _tabla = vector<int>(nfilas * ncols);
           _nfilas = nfilas;
           _ncolumnas = ncols;
-          // for (int j = 0; j < nfilas; j++)
-          //      _tabla[j * ncols] = 0;
-          // for (int i = 0; i < ncols; i++)
-          //      _tabla[i * nfilas] = 0;
      }
      int get(int fila, int col) {
           return _tabla[fila * _ncolumnas + col];
@@ -26,20 +22,6 @@ public:
      void set(int fila, int col, int elem) {
           _tabla[fila * _ncolumnas + col] = elem;
      }
-     // void print_vec() {
-     //      for (int i=0; i < _tabla.size() ; i++)
-     //           cout << _tabla[i]<< endl;
-     // }
-     // void print_mat() {
-     //      for (int j = 0; j < _ncolumnas; j++)
-     //           cout << j << ":\t" ;
-     //      cout << endl;
-     //      for (int i = 0; i < _nfilas; i++) {
-     //           for (int j = 0; j < _ncolumnas; j++)
-     //                cout << get(i, j) << "\t";
-     //           cout << endl;
-     //      }
-     // }
 };
 
 int dinamica (vector<item_t> &items, int W) {
@@ -48,10 +30,10 @@ int dinamica (vector<item_t> &items, int W) {
           return 0;
      Tabla tabla(n + 1, W + 1);
      int k = 1;
-     sort(items.begin(), items.end(),
-          [](item_t x, item_t y) {
-               return x.first < y.first;
-          });
+     // sort(items.begin(), items.end(),
+     //      [](item_t x, item_t y) {
+     //           return x.first < y.first;
+     //      });
 
      for (int i = 0; i < n + 1; i ++)
           for (int j = 0; j < W + 1; j++) {
