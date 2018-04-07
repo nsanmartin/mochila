@@ -114,6 +114,8 @@ void muestrear_algoritmos_bt_din(int W, vector<item_t> items) {
                << endl;
           for (auto x : items)
                cout << x.first << "/" << x.second << " "<<  endl ;
+
+          cout << "W: " << W << endl;
           exit(1);
      } else {
           //cout << res4 << endl;

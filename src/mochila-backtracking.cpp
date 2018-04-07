@@ -47,11 +47,12 @@ resolver_backtracking (vector<item_t> &items, int i, int W, mochila &m,
      if (i == 0) {  // ultimo
           mejor_afuera  = m.afuera;          
      } else {
-          mochila m_con_iesimo(m);
+          mochila m_sin_iesimo(m);
           agregar_item_a_suma(m.adentro, items[i - 1]);
           resolver_backtracking(items, i - 1, W, m, mejor_afuera);
-          agregar_item_a_suma(m_con_iesimo.afuera, items[i - 1]);
-          resolver_backtracking(items, i - 1, W, m_con_iesimo, mejor_afuera);
+          agregar_item_a_suma(m_sin_iesimo.afuera, items[i - 1]);
+          resolver_backtracking(items, i - 1, W, m_sin_iesimo,
+                                mejor_afuera);
      }
 }
 
