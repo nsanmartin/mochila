@@ -12,7 +12,6 @@ typedef std::pair<int,int> item_sum_t;
 typedef struct mochila {
      item_sum_t afuera;
      item_sum_t adentro;
-     item_sum_t total;
 } mochila;
 
 using namespace std;

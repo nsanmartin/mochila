@@ -11,27 +11,17 @@ resolver_backtracking (vector<item_t> &items, int i, int W, mochila &m,
                        item_sum_t &mejor);
 
 int backtracking (vector<item_t> &items, int W) {
-     if (items.size() == 0)
-          return 0;
-     sort(items.begin(), items.end(),
-          [](item_t x, item_t y) {
-               return x.first/x.second > y.first/y.second;
-          });
      mochila m;
      m.afuera = item_t(0,0);
-     item_sum_t mejor_afuera = make_pair(0,0);
-
+     item_sum_t total = item_sum_t(0,0);
      for (int i = 0; i < items.size(); i ++) {
-          agregar_item_a_suma(m.total, items[i]);
-          if (m.total.second > W)
-               agregar_item_a_suma (mejor_afuera, items[i]);
+          agregar_item_a_suma(total, items[i]);
      }
-     if (m.total.second <= W) return m.total.first;
-     // mejor_afuera.first = m.total.first - mejor_afuera.first;
-     // mejor_afuera.second = m.total.second - mejor_afuera.second;
+     if (total.second <= W) return total.first;
+     item_sum_t mejor_afuera = item_sum_t(total);
      resolver_backtracking(items, items.size(), W, m, mejor_afuera);
 
-     return m.total.first - mejor_afuera.first;
+     return total.first - mejor_afuera.first;
 }
 
 

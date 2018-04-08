@@ -1,0 +1,202 @@
+                      ___________________________
+
+                       EL PROBLEMA DE LA MOCHILA
+
+                           Nicolás San Martín
+                      ___________________________
+
+
+Table of Contents
+_________________
+
+1 Introducción
+.. 1.1 Formulación del problema
+.. 1.2 Ejemplo
+2 Algoritmos
+.. 2.1 Fuerza bruta
+..... 2.1.1 Pseudocódigo
+..... 2.1.2 Justificación
+..... 2.1.3 Complejidad
+.. 2.2 Backtracking
+.. 2.3 Meet in the middle
+.. 2.4 Programación dinámica
+
+
+
+
+
+1 Introducción
+==============
+
+  En el presente trabajo práctico se comparan cuatro algoritos que
+  obtienen la solución al "problema de la mochila" mediante diferentes
+  estrategias o técnicas algoritmicas. La solución a este problema tiene
+  diversas aplicaciones. Por ejemplo, una empresa dedicada al transporte
+  de bienes podría querer maximizar el beneficio obtenido al realizar
+  una carga. O, dada una estimación de la renta futura asociada a una
+  serie de activos financieros, alguien podría querer obtener una
+  "cartera de inversiones" donde la ganancia sea mayor, etc.
+
+  En primer lugar se muestran los algoritmos, justificando su correctiud
+  y mostrando su complejidad. Luego se realizan mediciones de sus
+  respectivos tiempos para diversos inputs.
+
+
+1.1 Formulación del problema
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Dados un conjunto $S$ de items a los que se asocia un /beneficio/
+  $p_i$ y un /tamaño/ $w_i$ y una mochila con capacidad máxima $W$, se
+  quiere encontrar el valor máximo obtenible al sumar los beneficios de
+  items de algún subconjunto de $S$ tal que la suma de sus items sea
+  menor o igual a $W$, es decir, se busca maximizar $$ \sum_{i=1}^{n}
+  x_ip_i $$ con la condición de que se cumpla asimismo $$ \sum_{i=1}^{n}
+  x_iw_i \leq W $$ donde $p_i > 0$, $p_i > 0$, $i = 1, \dots, n$ son el
+  peso y el beneficio de los elementos de $S$ y $x_i \in \{0,1\}$.
+
+
+1.2 Ejemplo
+~~~~~~~~~~~
+
+  Por ejemplo, supongamos que en $S$ hay $4$ items cuyos tamaños son $7,
+  2, 8, 8$, sus beneficios asociados $4, 5, 2, 7$ y que $W = 12$. La
+  suma de todos los beneficios es $18$. Pero como la suma de los
+  beneficios es igual a $25$, mayor que $W$, entonces esa solución no
+  sirve. De los subconjuntos que se ajustan a la restricción impuesta,
+  para aquel cuya suma de beneficios es máxima esta suma equivale a 12.
+
+
+2 Algoritmos
+============
+
+2.1 Fuerza bruta
+~~~~~~~~~~~~~~~~
+
+  El primer algoritmo que presentamos es el que procede por /fuerza
+  bruta/. Esto significa que por cada uno de los resultados posibles, es
+  decir, cada uno de los subconjuntos de $S$, se verifica la condición
+  impuesta al peso y, para los casos en que se cumple, se mantiene el
+  máximo beneficio.
+
+  El algoritmo implementado es recursivo. Por cada item $e \in S$
+  considera recursivamente los subconjuntos $S' \subset S$ tales que $e
+  \in S'$ y $e \not \in S'$
+
+  Se utilizan los siguientes tipos: `item' es `par<int,int>', `item_sum'
+  es también `par<int,int>', `mochila' es `tupla<item_sum,item_sum>'. El
+  tipo `item' representa un elemento de $S$. El tipo `item_sum'
+  representa la sumatoria de beneficios y de pesos de un subconjunto de
+  $S$. El tipo `mochila' contiene, por un lado, la información
+  correspondiente al contenido de una mochila, por otro lado el
+  contenido que se ha decidido excluir de una mochila. Esto debido a que
+  de este modo es posible determinar facilmente, por un lado, si una
+  mochila en un momento dado tiene un peso permitodo y, por otro, si su
+  beneficio acumulado es mejor que el de otra mochila. Como veremos al
+  considerar la estrategia /backtracking/, esto permitira comparar los
+  beneficios correcpondientes subconjuntos incluso en algunos casos
+  donde para alguno no se hayan considerado inclusión o no de la
+  totalidad de los ítems.
+
+  Los parametros de la siguiente función son una `lista' de `items', un
+  `int' que tendrá el valor de `W', una `mochila' que guardará los
+  resultados de las sumas de los items observados en cada paso,
+  sumandolos ya sea a la suma de los incluídos o de los excluídos. Por
+  último un `int' /solución/ donde se guardará la cantidad total de
+  beneficio /excluído/ por la solución elegida. A partir de este valor,
+  se puede calcular el beneficio correspondiente a la solución,
+  restandoselo a la sumatoria total de los beneficios. Los parámetros
+  son pasados por referencia.
+
+
+2.1.1 Pseudocódigo
+------------------
+
+  \begin{algorithmic}[1]
+  \Procedure{fuerza\_bruta}{$items, W, mochila, solucion$}
+  \If {len(items) = 0}
+  \If  {peso\_incl(mochila) $\leq$ W \textbf{and}
+          beneficio\_excl(mochila) $<$ beneficio\_excl(solucion)}
+  \State solucion $\gets$ mochila
+  \EndIf
+  \Else 
+  \State mochila\_con\_iesimo $\gets$ agregar\_item(first(items), mochila)
+  \State mochila\_sin\_iesimo $\gets$ no\_agregar\_item(first(items), mochila)
+  \State fuerza\_bruta(siguientes(items), W, mochila\_sin\_iesimo, solucion)
+  \State fuerza\_bruta(siguientes(items), W, mochila\_con\_iesimo, solucion)
+  \EndIf
+  \EndProcedure
+  \end{algorithmic}
+
+
+2.1.2 Justificación
+-------------------
+
+  Para obtener la solución al problema de la mochila usando el algoritmo
+  presentado en esta sección, se debe lo debe llamar con la lista de la
+  totalidad de los items como parámetro. El parametro mochila debe estar
+  inicialmente seteado en cero para ambas sumas (tando lo incluído como
+  lo no incluído). El parámetro solución deberá incluir la suma de todos
+  los beneficios, pues representa la suma de beneficios incluídos por
+  solución (y ese estado inicia representa la solución en la que no se
+  pone nada en la mochila). Finalmente, para obtener la solución al
+  problema de la mochila, debe restarse solución a la suma de los
+  beneficios de todos los items. Esto implica, desde luego, que debe
+  llevarse a cabo dicha suma, lo cual se hace en $O(n)$, recorriendo los
+  $n$ items y acumulando su beneficio correspondiente.
+
+  Para justificar que el algoritmo funciona consideremos que, por cada
+  item en la lista de items se consideran recursivamente dos mochilas,
+  una en la que se lo incluye al iésimo, y otra en la que no. Cada vez
+  que se llegue al caso base en que el número de items es igual a $0$,
+  en el parámetro `mochila' estarán la sumatorias: $$ \sum_{i=1}^{n}
+  x_ip_i, \sum_{i=1}^{n} x_iw_i, \sum_{i=1}^{n} (1-x_i)p_i,
+  \sum_{i=1}^{n} (1-x_i)p_i, $$ para algún $x_1, \dots x_n \in
+  \{0,1\}^n$
+
+  La función `peso_incl' devuelve justamente la sumatoria del peso del
+  contenido incluído en la mmochila, mientras que `beneficio_excl' es la
+  suma de los beneficios de los items que no incluye este subconjunto de
+  $S$ en cuestión. Asi, en la guarda de a línea 3, la mochila es
+  descartada tanto si su peso es incorrecto (mayor a $W$) como si
+  anteriormente otra mochila excluía una cantidad menor de beneficio.
+
+  Por último, dado que la función comienza siendo llamada con la
+  totalidad de lo items y se llama recursivamente hasta que todos han
+  sido considerados, esto implica que los $2^n$ son considerados. De
+  este modo, el caso correspondiente a la solución al problema de la
+  mochila es considerado y, como en el mismo se cumple que su peso es
+  menor o igual a $W$, y que excluye la mínima cantidad de beneficio,
+  entonces será este número el valor contenido en la variable solución
+  al terminar el algoritmo.
+
+
+2.1.3 Complejidad
+-----------------
+
+
+2.2 Backtracking
+~~~~~~~~~~~~~~~~
+
+  algorithmicx
+
+  Example:
+
+  \begin{algorithmic}[1] 
+      \Procedure{Euclid}{$a,b$} \Comment{The g.c.d. of a and b}
+          \State $r\gets a \bmod b$
+          \While{$r\not=0$} \Comment{We have the answer if r is 0}
+              \State $a \gets b$
+              \State $b \gets r$
+              \State $r \gets a \bmod b$
+          \EndWhile\label{euclidendwhile}
+          \State \textbf{return} $b$\Comment{The gcd is b}
+      \EndProcedure
+  \end{algorithmic}
+
+
+2.3 Meet in the middle
+~~~~~~~~~~~~~~~~~~~~~~
+
+
+2.4 Programación dinámica
+~~~~~~~~~~~~~~~~~~~~~~~~~

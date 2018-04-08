@@ -22,6 +22,8 @@ tentrada-salida: $(OBJECTS)
 tdin: $(OBJECTS)
 	g++  -o build/$@ $(CFLAGS) $@.cpp $^
 
+tbt: $(OBJECTS)
+	g++  -o build/$@ $(CFLAGS) $@.cpp $^
 
 clean:
 	find . -name "*.o" -exec rm {} \;

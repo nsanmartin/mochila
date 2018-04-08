@@ -1,0 +1,9 @@
+#! /bin/bash
+
+echo "borro ../py/ejs/ej*"
+rm ../py/ejs/ej*
+
+for ((i=0; i < $1; i++)){
+        ../py/mochila.py $((RANDOM%25+1)) $((RANDOM%250+10)) > \
+                         ../py/ejs/ej${i}
+}
