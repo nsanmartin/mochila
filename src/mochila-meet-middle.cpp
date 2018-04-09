@@ -64,34 +64,27 @@ filtrar_mochilas_pesadas(vector<item_sum_t> &mochilas) {
 item_sum_t
 mochila_optima (vector<item_sum_t> A, vector<item_sum_t> B_filtrada,
                 int W) {
-     item_sum_t mejor_B = B_filtrada.back();
-     if (A.size() == 0)
-          return mejor_B;
-     item_sum_t optima = A[0];
-     item_sum_t b
-          = buscar_combinacion_optima(B_filtrada, W - optima.second);
-     if (b.second + optima.second <= W) {
-          optima.second += b.second;
-          optima.first += b.first;
-     }
-     if (optima.first < mejor_B.first)
-          optima = mejor_B;
-     for (int i = 1; i < A.size(); i++) {
+     // precondiciones:
+     // 1: (0, 0) pertence a B_filtrada
+     // 2: x en B_filtrada => x.peso <= W
+     // 3: B_filtrada esta ordenada
+     item_sum_t optima = B_filtrada.back();
+     for (int i = 0; i < A.size(); i++) {
           item_sum_t a = A[i];
-          b = buscar_combinacion_optima(B_filtrada, W - a.second);
-          if (b.second + a.second <= W) {
-               a.second += b.second;
-               a.first += b.first;
-          } else if (b.first > a.first) {
+          item_sum_t b = buscar_combinacion_optima(B_filtrada,
+                                                   W - a.second);
+          if (b.second + a.second <= W) 
+               combinar_sumas(a, b);
+          else if (b.first > a.first) 
                a = b;
-          }
-
+          
           if (optima.first < a.first) 
                optima = a;
      }
      return optima;
 }
 
+// busqueda binaria de mayor x en B tal que x.peso <= tope
 item_sum_t
 buscar_combinacion_optima(vector<item_sum_t> &B, int tope)
 {
@@ -108,7 +101,6 @@ buscar_combinacion_optima(vector<item_sum_t> &B, int tope)
           else
                hasta = med;
      }
-
      if (hasta < n && B[hasta].second <= tope)
           return B[hasta];
      return B[desde];

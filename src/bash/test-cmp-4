@@ -1,0 +1,14 @@
+#!/bin/bash
+if [ $# -ne 2 ]
+then
+    echo Uso $0 W n
+else
+    W=$1
+    N=$2
+    echo comparo resultados y mido tiempos
+    while [ $? -eq 0 ]
+    do
+
+        ../build/ttime $((RANDOM%$W+1)) $((RANDOM%$N+1))
+    done
+fi

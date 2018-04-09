@@ -89,17 +89,19 @@ son pasados por referencia.
 *** Pseudocódigo
 
 \begin{algorithmic}[1]
-\Procedure{fuerza\_bruta}{$items, W, mochila, solucion$}
-\If {len(items) = 0}
-\If  {peso\_incl(mochila) $\leq$ W \textbf{and}
-        beneficio\_excl(mochila) $<$ beneficio\_excl(solucion)}
-\State solucion $\gets$ mochila
+\Procedure{fuerza\_bruta}
+    {\texttt{list<item>} items, \texttt{int } W, \texttt{mochila } m,
+      \texttt{item\_sum } solucion}
+\If {vacia(items)}
+\If  {peso\_incl(m) $\leq$ W \textbf{and}
+        beneficio\_excl(m) $<$ beneficio\_excl(solucion)}
+\State solucion $\gets$ m
 \EndIf
 \Else 
-\State mochila\_con\_iesimo $\gets$ agregar\_item(first(items), mochila)
-\State mochila\_sin\_iesimo $\gets$ no\_agregar\_item(first(items), mochila)
-\State fuerza\_bruta(siguientes(items), W, mochila\_sin\_iesimo, solucion)
-\State fuerza\_bruta(siguientes(items), W, mochila\_con\_iesimo, solucion)
+\State m\_con\_iesimo $\gets$ agregar\_item(first(items), m)
+\State m\_sin\_iesimo $\gets$ no\_agregar\_item(first(items), m)
+\State fuerza\_bruta(siguientes(items), W, m\_sin\_iesimo, solucion)
+\State fuerza\_bruta(siguientes(items), W, m\_con\_iesimo, solucion)
 \EndIf
 \EndProcedure
 \end{algorithmic}
@@ -251,7 +253,9 @@ o incluir un item.
 *** Pseudocódigo
 
 \begin{algorithmic}[1]
-\Procedure{fuerza\_bruta}{$items, W, mochila, solucion$}
+\Procedure{backtracking}
+    {\texttt{list<item>} items, \texttt{int } W, \texttt{mochila } m,
+      \texttt{item\_sum } solucion}
 \If  {peso\_incl(mochila) $\geq$ W \textbf{or}
         beneficio\_excl(mochila) $>$ beneficio\_excl(solucion)}
 \State \textbf{return}
@@ -295,4 +299,102 @@ O(f(n))$. Usando la hipótesis inductiva:
 $$T(n) \leq 2(O(2^{n-1})) + \Theta(1) = O(2^n)$$ 
 
 ** Meet in the middle
+El algoritmo ~meet_in_the_middle~ considera las dos mitades del
+conjunto de items. Forma el conjunto de partes de cada una. Para ello
+utiliza la función auxiliar ~conjunto_de_partes~, la cual recibe los
+índices ~desde~ y ~hasta~ de los elementos a incluir en el conjunto de
+partes, y por supuesto el conjunto de items, $S$. Además, recibe el
+valor $W$ para excluir del resultado aquellos subconjuntos $S' \subset
+S$ cuyo peso sea demasiado grande. 
+
+Así se obtienen $A$ y $B$, ~vectors~ que representarán los
+subconjuntos de los conjuntos de partes de cada una de las dos mitades
+de $S$. Cada uno de los elementos de los ~vector~ $A$ y $B$ es una
+posible carga de la mochila. Son subconjuntos de los conjuntos de
+partes de los elementos de las dos mitades del conjunto de items, y no
+conjuntos de partes propiamente dichos, ya que si alguna de las sumas
+acumula un peso mayor a $W$, entonces podemos excluirla sin riesgo a
+dejar de lado la solución buscada. 
+
+Luego se ordena el ~vector~ $B$ tanto por peso como por beneficio, en
+orden creciente. Para ello se ordena, en primer lugar, por peso. Esta
+operación se lleva a cabo utilizando el algoritmo ~sort~ de la
+biblioteca de ~c++~, el cual tiene una complejidad de $O(l\log{l})$, con
+$l$ el tamaño de la entrada. Como en nuestro caso el tamaño de la
+entrada está acotado superiormente por $2^{\frac{n}{2}}$, entonces
+este llamado tiene una complejidad
+$$ O(2^{\frac{n}{2}} \log{2^{\frac{n}{2}}}) = O(n \times 2^{\frac{n}{2}})$$.
+
+Una vez ordenado por peso, decartamos todos aquellos elementos tales
+que pesen más que otro elemento de mayor valor. Como estos elementos
+reresentn ya soluciones al problema, es obvio que como lo que se
+quiere es maximizar el beneficio, descartar los elementos mencionados
+no nos harán perder la solución.
+
+Por último recorremos los elementos $a \in A$ y encontramos para cada
+uno el elemento $b \in B$ tal que $a \cup b$ tenga un peso menor o
+igual a $W$, y su beneficio sea mayor o igual que $a \cup b'$ para
+todo $b' \in B$. Para ellos recorremos uno por uno los a los sumo
+$2^{\frac{n}{2}}$ elementos de $A$, y por cada uno buscamos el $b \in
+B$ correspondiente. Ésta es una búsqueda binaria, dado que los
+elementos de $B$ están ordenados del modo indicado, por los que esta
+operación puede realizarse en $O(\log{2^{\frac{n}{2}}}) = O(n)$,
+operación que se realiza $O(2^{\frac{n}{2}})$ veces por cada elemento
+de $A$.
+
+*** Pseudocódigo
+
+\begin{algorithmic}[1]
+\State \texttt{int}
+\Function{meet\_in\_the\_middle}
+    {\texttt{vector<item> }items, \texttt{int }W}
+\State A $\gets$ conjunto\_de\_partes(0, n/2, items, W) 
+    \Comment {$O(2^{\frac{n}{2}})$}
+\State B $\gets$ conjunto\_de\_partes(n/2, n, items, W)
+    \Comment {$O(2^{\frac{n}{2}})$}
+\State sort(B)
+    \Comment {$O(n \times 2^{\frac{n}{2}})$}
+\State B $\gets$ filtrar\_mochilas\_pesadas(B)
+    \Comment {$O(2^{\frac{n}{2}})$}
+\State \textbf{return} mochila\_optima(A, B, W)
+    \Comment {$O(n \times 2^{\frac{n}{2}})$}
+\EndFunction
+\end{algorithmic}
+
+\begin{algorithmic}[1]
+\State {vector<item\_sum>}
+\Function{conjunto\_de\_partes}{\textbf{int} desde, hasta, $items, W$}
+\State partes $\gets$ nuevo\_vector(\texttt{item\_sum})
+\For {i = desde \textbf{to} hasta} 
+{
+    \If {items[i].peso > W} { \textbf { continue }}
+    \EndIf
+    \State partes.push\_back(items[i])
+    \ForAll {p $\in$ partes}
+    {  
+        \State item\_sum tmp $\gets$ p + items[i]
+        \If {tmp.peso <= W}
+        \State partes.push\_back(tmp)
+        \EndIf
+    }\EndFor
+}\EndFor
+\State \textbf{return} partes
+\EndFunction
+\end{algorithmic}
+
+
+\begin{algorithmic}[1]
+\State {vector<item\_sum>}
+\Function{filtrar\_mochilas\_pesadas}
+{\texttt{vector<item\_sum> } mochilas }}
+\State res $\gets$ [(0,0)]
+\ForAll {m $\in$ mochila} 
+    \If {res.back().beneficio < m.beneficio}
+        { res.push\_back(m)}
+    \EndIf
+\EndFor
+\State \textbf{return} res
+\EndFunction
+\end{algorithmic}
+
 ** Programación dinámica

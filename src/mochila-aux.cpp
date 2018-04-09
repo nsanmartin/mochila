@@ -71,3 +71,8 @@ void agregar_item_a_suma(item_sum_t &x, item_t const &i) {
      x.first += i.first;
      x.second += i.second;
 };
+
+void combinar_sumas (item_sum_t &x, item_sum_t const &y) {
+     x.first += y.first;
+     x.second += y.second;
+};

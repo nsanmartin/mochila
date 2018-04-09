@@ -46,7 +46,7 @@ void copiar_items(vector<item_t> &items,
 vector<item_t> random_items(int cantidad) ;
 
 void agregar_item_a_suma(item_sum_t &x, item_t const &i) ;
-
+void combinar_sumas (item_sum_t &x, item_sum_t const &y);
 
 //io
 
