@@ -2,12 +2,14 @@
 #include <numeric>
 #include <chrono>
 
-#include "mochila.h"
+#include "../mochila.h"
 
 using namespace std;
-void muestrear_bt(int W, vector<item_t> items) ;
+//void test_cons(int n, int W) ;
+void muestrear_algoritmos(int W, vector<item_t> items) ;
 
-int main(int argc, char** argv) {
+
+int main (int argc, char ** argv) {
      int W;
      vector<item_t> items;
      if (argc == 1) {
@@ -24,5 +26,6 @@ int main(int argc, char** argv) {
           leer_parametros_stream(W, items, file);
      }
      cout << items.size() << " " << W << " ";
-     muestrear_bt(W, items);
+     muestrear_algoritmos(W, items);
+     cout << endl;
 }

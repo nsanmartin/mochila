@@ -2,9 +2,14 @@
 #include <numeric>
 #include <algorithm>
 #include <array>
+#include <assert.h>
 
 #include "mochila.h"
 using namespace std;
+
+inline bool mul_overflow(int x, int y) {                        
+     return x != 0 && ((y * x) / x) != y;
+}
 
 class Tabla {
      int _nfilas;
@@ -12,6 +17,7 @@ class Tabla {
      vector<int> _tabla;
 public:
      Tabla(int nfilas, int ncols) {
+          assert(!mul_overflow(nfilas, ncols));
           _tabla = vector<int>(nfilas * ncols);
           _nfilas = nfilas;
           _ncolumnas = ncols;
@@ -30,10 +36,6 @@ int dinamica (vector<item_t> &items, int W) {
           return 0;
      Tabla tabla(n + 1, W + 1);
      int k = 1;
-     // sort(items.begin(), items.end(),
-     //      [](item_t x, item_t y) {
-     //           return x.first < y.first;
-     //      });
 
      for (int i = 0; i < n + 1; i ++)
           for (int j = 0; j < W + 1; j++) {

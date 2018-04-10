@@ -2,9 +2,10 @@
 #include <numeric>
 #include <chrono>
 
-#include "mochila.h"
+#include "../mochila.h"
 
 using namespace std;
+void muestrear_din(int W, vector<item_t> items) ;
 
 int main(int argc, char** argv) {
      int W;
@@ -23,6 +24,6 @@ int main(int argc, char** argv) {
           leer_parametros_stream(W, items, file);
      }
      cout << items.size() << " " << W << " ";
-     muestrear_algoritmos(W, items);
+     muestrear_din(W, items);
      cout << endl;
 }

@@ -2,7 +2,7 @@
 #include <numeric>
 #include <chrono>
 
-#include "mochila.h"
+#include "../mochila.h"
 
 using namespace std;
 

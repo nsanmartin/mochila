@@ -1,34 +1,40 @@
-
-OBJECTS = mochila-fuerza-bruta.o mochila-meet-middle.o \
+_OBJS = mochila-fuerza-bruta.o mochila-meet-middle.o \
 			mochila-backtracking.o mochila-dinamica.o mochila-aux.o \
-			time.o entrada-salida.o 
+			time.o entrada-salida.o
+ODIR=obj
+OBJECTS = $(patsubst %,$(ODIR)/%,$(_OBJS))
+
 CFLAGS = -g -std=c++11 
-%.o: %.cpp
+
+.PHONY = clean
+
+obj/%.o: %.cpp
 	g++ -g -std=c++11 -c -o $@ $<
 
+tests: ttime ttime-bt-mm-din ttime-bt-din tentrada-salida tdin tbt tmm 
 
 ttime: $(OBJECTS)
-	g++  -o build/$@ $(CFLAGS) $@.cpp $^
+	g++  -o build/$@ $(CFLAGS) tests/$@.cpp $^
 
 ttime-bt-mm-din: $(OBJECTS)
-	g++  -o build/$@ $(CFLAGS) $@.cpp $^
+	g++  -o build/$@ $(CFLAGS) tests/$@.cpp $^
 
 ttime-bt-din: $(OBJECTS)
-	g++  -o build/$@ $(CFLAGS) $@.cpp $^
+	g++  -o build/$@ $(CFLAGS) tests/$@.cpp $^
 
 tentrada-salida: $(OBJECTS)
-	g++  -o build/$@ $(CFLAGS) $@.cpp $^
+	g++  -o build/$@ $(CFLAGS) tests/$@.cpp $^
 
 tdin: $(OBJECTS)
-	g++  -o build/$@ $(CFLAGS) $@.cpp $^
+	g++  -o build/$@ $(CFLAGS) tests/$@.cpp $^
 
 tbt: $(OBJECTS)
-	g++  -o build/$@ $(CFLAGS) $@.cpp $^
+	g++  -o build/$@ $(CFLAGS) tests/$@.cpp $^
+
+tmm: $(OBJECTS)
+	g++  -o build/$@ $(CFLAGS) tests/$@.cpp $^
 
 clean:
-	find . -name "*.o" -exec rm {} \;
-	find . -name "*.exe" -exec rm {} \;
-	find . -name "*.exe.stackdump" -exec rm {} \;
-	find . -name "*.out" -exec rm {} \;
+	rm obj/*
 	rm build/*
 
