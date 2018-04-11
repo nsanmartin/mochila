@@ -10,7 +10,7 @@ void muestrear_algoritmos_bt_din(int W, vector<item_t> items) ;
 
 void test_cons_bt_din(int n, int W) {
      vector<item_t> items = random_items(n);
-     muestrear_algoritmos_bt_din(W, items);
+     muestrear_algoritmos_bt_bt2(W, items);
 }
 
 
