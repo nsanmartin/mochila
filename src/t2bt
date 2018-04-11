@@ -1,0 +1,6 @@
+#!/bin/bash
+
+while [ $? -eq 0 ]
+do
+    ./py/muestra2.py 4 40 | ./build/ttime-bt-bt2.exe
+done

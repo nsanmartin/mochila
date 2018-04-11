@@ -108,8 +108,10 @@ void muestrear_algoritmos_bt_bt2(int W, vector<item_t> items) {
           cerr << "\t resbt: " << resbt
                << "\t resbt2: " << resbt2 
                << endl;
+          cout << "========\n";
+          cout << items.size() << " " << W << endl;
           for (auto x : items)
-               cout << x.first << "/" << x.second << " "<<  endl ;
+               cout << x.second << " " << x.first << " "<<  endl ;
           exit(1);
      } 
 
