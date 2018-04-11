@@ -1,6 +1,11 @@
 #!/bin/bash
-
-while [ $? -eq 0 ]
-do
-    ./py/muestra2.py 4 40 | ./build/ttime-bt-bt2.exe
-done
+if [ $# -ne 2 ]; then
+    echo use: $0 n W
+else
+    n=$1
+    W=$2
+    while [ $? -eq 0 ]
+    do
+        ./py/muestra2.py $((RANDOM%$n+1)) $((RANDOM%$W+1)) | ./build/ttime-bt-bt2
+    done
+fi
