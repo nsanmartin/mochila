@@ -8,6 +8,10 @@ CFLAGS = -g -std=c++11
 
 .PHONY = clean
 
+
+ttime-bt-bt2: $(OBJECTS) 
+	g++  -o build/$@ $(CFLAGS) tests/$@.cpp $^
+
 build:
 	if [ ! -d build ]; then mkdir build; fi
 
@@ -30,8 +34,6 @@ ttime-bt-mm-din: $(OBJECTS)
 ttime-bt-din: $(OBJECTS) 
 	g++  -o build/$@ $(CFLAGS) tests/$@.cpp $^
 
-ttime-bt-bt2: $(OBJECTS) 
-	g++  -o build/$@ $(CFLAGS) tests/$@.cpp $^
 
 tentrada-salida: $(OBJECTS) 
 	g++  -o build/$@ $(CFLAGS) tests/$@.cpp $^
