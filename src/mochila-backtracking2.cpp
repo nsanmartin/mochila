@@ -31,14 +31,9 @@ resolver_backtracking2 (vector<item_t> &items, int i, int W, item_sum_t &m,
      double cota_gls = mochila_gls(items, i-1, W - m.second);
      if (m.second > W || cota_gls + (double) m.first < (double)mejor)
           return;
-     if (i == 0) {
-          //     if (m.first > mejor) 
+     if (i == 0) 
           mejor = m.first;
-     } else {
-          // double cota_gls = mochila_gls(items, i-1, W - m.second);
-          // if (cota_gls + (double) m.first < (double)mejor) {
-          //      return;
-          // }
+     else {
           item_sum_t m_sin_iesimo(m);
           resolver_backtracking2(items, i - 1, W, m_sin_iesimo, mejor);
           agregar_item_a_suma(m, items[i - 1]);
