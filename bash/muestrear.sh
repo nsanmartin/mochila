@@ -1,5 +1,6 @@
 #!/bin/bash
-if [ $PWD == bash ]; then BASE_DIR=$(dirname $PWD); else BASE_DIR=$PWD; fi
+if [ $(basename $PWD) == bash ]
+then BASE_DIR=$(dirname $PWD); else BASE_DIR=$PWD; fi
 MUESTRA=${BASE_DIR}/py/muestra2.py
 
 print_help () {
