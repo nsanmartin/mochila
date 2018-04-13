@@ -1,12 +1,12 @@
-
-CPP_FILES = $(wildcard *.cpp)
+CPP_FILES = $(wildcard src/*.cpp)
 _OBJS = $(subst .cpp,.o, $(CPP_FILES))
 ODIR=obj
-OBJECTS = $(patsubst %,$(ODIR)/%,$(_OBJS))
+OBJECTS = $(subst src/,, $(patsubst %,$(ODIR)/%,$(_OBJS)))
 
 CFLAGS = -g -std=c++11 
 
 .PHONY = clean
+
 
 ttime-bt2-din: $(OBJECTS) 
 	g++  -o build/$@ $(CFLAGS) tests/$@.cpp $^
@@ -21,7 +21,7 @@ obj: build
 	if [ ! -d obj ]; then mkdir obj; fi
 
 
-obj/%.o: %.cpp obj
+obj/%.o: src/%.cpp obj
 	g++ -g -std=c++11 -c -o $@ $<
 
 tests: ttime ttime-bt-mm-din ttime-bt-din tentrada-salida tdin tbt tmm 

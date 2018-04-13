@@ -2,14 +2,11 @@
 #include <numeric>
 #include <chrono>
 
-#include "../mochila.h"
+#include "../src/mochila.h"
 
 using namespace std;
 
-void muestrear_algoritmos_bt_bt2(int W, vector<item_t> items) ;
-
-
-int main (int argc, char ** argv) {
+int main(int argc, char** argv) {
      int W;
      vector<item_t> items;
      if (argc == 1) {
@@ -26,6 +23,6 @@ int main (int argc, char ** argv) {
           leer_parametros_stream(W, items, file);
      }
      cout << items.size() << " " << W << " ";
-     muestrear_algoritmos_bt_bt2(W, items);
+     muestrear_algoritmos(W, items);
      cout << endl;
 }

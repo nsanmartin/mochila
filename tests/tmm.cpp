@@ -2,7 +2,7 @@
 #include <numeric>
 #include <chrono>
 
-#include "../mochila.h"
+#include "../src/mochila.h"
 
 using namespace std;
 void muestrear_mm(int W, vector<item_t> items) ;
