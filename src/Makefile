@@ -8,6 +8,8 @@ CFLAGS = -g -std=c++11
 
 .PHONY = clean
 
+ttime-bt2-din: $(OBJECTS) 
+	g++  -o build/$@ $(CFLAGS) tests/$@.cpp $^
 
 ttime-bt-bt2: $(OBJECTS) 
 	g++  -o build/$@ $(CFLAGS) tests/$@.cpp $^

@@ -114,8 +114,27 @@ void muestrear_algoritmos_bt_bt2(int W, vector<item_t> items) {
                cout << x.second << " " << x.first << " "<<  endl ;
           exit(1);
      } 
+}
+
+
+
+void muestrear_algoritmos_bt2_din(int W, vector<item_t> items) {
+     int resbt2 = muestrear_bt2(W, items);
+     int resdin = muestrear_din(W, items);
+     if ( resbt2 != resdin) {
+          cerr << "Error: bt , y bt2 no coincieden." << endl;
+          cerr << "\t resbt: " << resbt2
+               << "\t resdin: " << resdin 
+               << endl;
+          cout << "========\n";
+          cout << items.size() << " " << W << endl;
+          for (auto x : items)
+               cout << x.second << " " << x.first << " "<<  endl ;
+          exit(1);
+     } 
 
 }
+
 void muestrear_algoritmos_bt_din(int W, vector<item_t> items) {
      cout << "__ ";
 
