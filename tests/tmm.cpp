@@ -25,4 +25,5 @@ int main(int argc, char** argv) {
      }
      cout << items.size() << " " << W << " ";
      muestrear_mm(W, items);
+     cout << endl;
 }

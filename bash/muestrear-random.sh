@@ -11,8 +11,8 @@ print_help () {
 }
 
 PROG=$1
+CMD=$PROG
 
-CMD=${BASE_DIR}/build/${PROG}
 
 if [ ! -f $CMD ]; then
     echo "no encuentro CMD=${BASE_DIR}/build/${PROG}"

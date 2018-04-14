@@ -11,177 +11,125 @@
 #+EXPORT_EXCLUDE_TAGS: noexport
 
 * Introducción
-En el presente trabajo práctico se comparan cuatro algoritos que
+En el presente trabajo práctico se comparan distintos algoritos que
 obtienen la solución al "problema de la mochila" mediante diferentes
-estrategias o técnicas algoritmicas. La solución a este problema tiene
-diversas aplicaciones. Por ejemplo, una empresa dedicada al transporte
-de bienes podría querer maximizar el beneficio obtenido al realizar
-una carga. O, dada una estimación de la renta futura asociada a una
-serie de activos financieros, alguien podría querer obtener una
-"cartera de inversiones" donde la ganancia sea mayor, etc.
+estrategias. La solución a este problema tiene diversas
+aplicaciones. Por ejemplo, una empresa dedicada al transporte de
+distintos tipos de bienes podría querer maximizar el beneficio
+obtenido al realizar una carga. O, dada una estimación de la renta
+futura asociada a una serie de activos financieros, alguien podría
+querer obtener una "cartera de inversiones" donde la ganancia sea
+mayor, etc.
 
 En primer lugar se muestran los algoritmos, justificando su correctiud
 y mostrando su complejidad. Luego se realizan mediciones de sus
-respectivos tiempos para diversos inputs.
+respectivos tiempos para diversas entradas y se revisan agunas hipótesis
+que se tenían inicialmente.
 
 ** Formulación del problema
-Dados un conjunto $S$ de items a los que se asocia un /beneficio/ $p_i$
-y un /tamaño/ $w_i$ y una mochila con capacidad máxima $W$, se quiere
-encontrar el valor máximo obtenible al sumar los beneficios de items de
-algún subconjunto de $S$ tal que la suma de sus items sea menor o
-igual a $W$, es decir, se busca maximizar
-$$
-\sum_{i=1}^{n} x_ip_i
-$$
-con la condición de que se cumpla asimismo
-$$
-\sum_{i=1}^{n} x_iw_i \leq W
-$$
-donde $p_i > 0$, $p_i > 0$, $i = 1, \dots, n$ son el peso y el
+Dados un conjunto $S$ de items a los que se asocia un /beneficio/
+$p_i$ y un /tamaño/ $w_i$ y una mochila con capacidad máxima $W$, se
+quiere encontrar el valor máximo obtenible al sumar los beneficios de
+items de algún subconjunto de $S$ tal que la suma de los pesos de sus
+items sea menor o igual a $W$, es decir, se busca maximizar
+
+$$\sum_{i=1}^{n} x_ip_i $$
+
+ con la condición de que se cumpla asimismo 
+
+$$\sum_{i=1}^{n} x_iw_i \leq W $$
+
+donde $w_i > 0$, $p_i > 0$, $i = 1, \dots, n$ son los tamaños y el
 beneficio de los elementos de $S$ y $x_i \in \{0,1\}$.
 
 ** Ejemplo
 Por ejemplo, supongamos que en $S$ hay $4$ items cuyos tamaños son $7,
 2, 8, 8$, sus beneficios asociados $4, 5, 2, 7$ y que $W = 12$. La
-suma de todos los beneficios es $18$. Pero como la suma de los
-beneficios es igual a $25$, mayor que $W$, entonces esa solución no
-sirve. De los subconjuntos que se ajustan a la restricción
-impuesta, para aquel cuya suma de beneficios es máxima esta suma
-equivale a 12.
+suma de todos los beneficios es $18$. Pero como la suma de los tamaños
+es igual a $25$, mayor que $W$, entonces esa solución no sirve. De los
+subconjuntos que se ajustan a la restricción impuesta, aquel cuya suma
+de beneficios es máxima, aumula en total 12.
 
 * Algoritmos
 ** Fuerza bruta
 El primer algoritmo que presentamos es el que procede por /fuerza
 bruta/. Esto significa que por cada uno de los resultados posibles, es
 decir, cada uno de los subconjuntos de $S$, se verifica la condición
-impuesta al peso y, para los casos en que se cumple, se mantiene el
-máximo beneficio.
+impuesta al peso y, para los casos en que esta se cumple, se comparan
+sus beneficios con el máximo encontrado y se mantiene el mayor.
 
 El algoritmo implementado es recursivo. Por cada item $e \in S$
-considera recursivamente los subconjuntos $S' \subset S$ tales que
-$e \in S'$ y $e \not \in S'$
+existe la opción de incluirlo o no en cada posible solución (es decir
+en cada elección posible para la /carga/ de la mochila). Si se lo
+incluye, entonces se suma su tamaño al de un acumulador del tamaño
+utilizado en esta solución, así como uno de su beneficio. 
 
-Se utilizan los siguientes tipos: ~item~ es ~par<int,int>~, ~item_sum~
-es también ~par<int,int>~, ~mochila~ es ~tupla<item_sum,item_sum>~. El
-tipo ~item~ representa un elemento de $S$. El tipo ~item_sum~
-representa la sumatoria de beneficios y de pesos de un subconjunto de
-$S$. El tipo ~mochila~ contiene, por un lado, la información
-correspondiente al contenido de una mochila, por otro lado el
-contenido que se ha decidido excluir de una mochila. Esto debido a que
-de este modo es posible determinar facilmente, por un lado, si una
-mochila en un momento dado tiene un peso permitodo y, por otro, si su
-beneficio acumulado es mejor que el de otra mochila. Como veremos al
-considerar la estrategia /backtracking/, esto permitira comparar los
-beneficios correcpondientes subconjuntos incluso en algunos casos
-donde para alguno no se hayan considerado inclusión o no de la
-totalidad de los ítems.
-
-Los parametros de la siguiente función son una ~lista~ de ~items~, un
-~int~ que tendrá el valor de ~W~, una ~mochila~ que guardará los
-resultados de las sumas de los items observados en cada paso,
-sumandolos ya sea a la suma de los incluídos o de los excluídos. Por
-último un ~int~ /solución/ donde se guardará la cantidad total de
-beneficio /excluído/ por la solución elegida. A partir de este valor,
-se puede calcular el beneficio correspondiente a la solución,
-restandoselo a la sumatoria total de los beneficios. Los parámetros
-son pasados por referencia.
+Por ejemplo, al considerar el primer ítem $e_1$ se forman las cargas
+$\{e_1\}$ y $\{\}$, llamando recursivamente en ambos casos con
+$S\setminus\{e\}$ como conjunto de ítems restantes. Cada vez que se
+han considerado todos los elementos de $S$ se tiene un conjunto $C
+\subset S$ con una posible solución (es decir, la suma tanto del
+tamaño como del beneficio de un subconjunto de $S$) en $C$. 
 
 *** Pseudocódigo
 
 \begin{algorithmic}[1]
 \Procedure{fuerza\_bruta}
-    {\texttt{list<item>} items, \texttt{int } W, \texttt{mochila } m,
-      \texttt{item\_sum } solucion}
-\If {vacia(items)}
-\If  {peso\_incl(m) $\leq$ W \textbf{and}
-        beneficio\_excl(m) $<$ beneficio\_excl(solucion)}
-\State solucion $\gets$ m
+    {\texttt{list(item)} items, \texttt{int } W, \texttt{carga } c,
+      \texttt{int} solucion}
+\If {length(items) > 0}
+\State c\_con\_iesimo $\gets$ agregar\_item(c, first(items))
+\State fuerza\_bruta(siguientes(items), W, c, solucion)
+\State fuerza\_bruta(siguientes(items), W, c\_con\_iesimo, solucion)
+\Else\If  {peso(c) $\leq$ W \textbf{and}
+        beneficio(c) $>$ solucion}
+\State solucion $\gets$ beneficio(c)
 \EndIf
-\Else 
-\State m\_con\_iesimo $\gets$ agregar\_item(first(items), m)
-\State m\_sin\_iesimo $\gets$ no\_agregar\_item(first(items), m)
-\State fuerza\_bruta(siguientes(items), W, m\_sin\_iesimo, solucion)
-\State fuerza\_bruta(siguientes(items), W, m\_con\_iesimo, solucion)
 \EndIf
 \EndProcedure
 \end{algorithmic}
 
 *** Justificación
-Para obtener la solución al problema de la mochila usando el algoritmo
-presentado en esta sección, se debe lo debe llamar con la lista de la
-totalidad de los items como parámetro. El parametro mochila debe estar
-inicialmente seteado en cero para ambas sumas (tando lo incluído como
-lo no incluído). El parámetro solución deberá incluir la suma de todos
-los beneficios, pues representa la suma de beneficios incluídos por
-solución (y ese estado inicia representa la solución en la que no se
-pone nada en la mochila). Finalmente, para obtener la solución al
-problema de la mochila, debe restarse solución a la suma de los
-beneficios de todos los items. Esto implica, desde luego, que debe
-llevarse a cabo dicha suma, lo cual se hace en $O(n)$, recorriendo los
-$n$ items y acumulando su beneficio correspondiente.
+Sean $x.w$ el tamaño del ítem $x$ y $x.p$ el beneficio del mismo.
+Para justificar este algoritmo debemos mostrar que se consideran todos
+los casos posibles para las cargas de la mochila. Si esto es así,
+entonces el valor de la variable ~solución~ luego de la ejecución será
+necesariamente $s = \sum_{x\in C} x.p$ para un $C\subset S$ tal que
+$\sum_{x\in C} x.w \leq W$ y a la vez $s  \geq \sum_{x\in C'} x.p$ para
+todo $C' \subset S$.
 
-Para justificar que el algoritmo funciona consideremos que, por cada
-item en la lista de items se consideran recursivamente dos mochilas,
-una en la que se lo incluye al iésimo, y otra en la que no. Cada vez
-que se llegue al caso base en que el número de items es igual a $0$,
-en el parámetro ~mochila~ estarán la sumatorias:
-$$
-\sum_{i=1}^{n} x_ip_i, 
-\sum_{i=1}^{n} x_iw_i, 
-\sum_{i=1}^{n} (1-x_i)p_i,
-\sum_{i=1}^{n} (1-x_i)p_i,
-$$
-para algún $x_1, \dots x_n \in \{0,1\}^n$
-
-La función ~peso_incl~ devuelve justamente la sumatoria del peso del
-contenido incluído en la mmochila, mientras que ~beneficio_excl~ es la
-suma de los beneficios de los items que no incluye este subconjunto de
-$S$ en cuestión. Asi, en la guarda de a línea 3, la mochila es
-descartada tanto si su peso es incorrecto (mayor a $W$) como si
-anteriormente otra mochila excluía una cantidad menor de beneficio. Y
-al ser llamada la variable solución tiene el valor correspondiente al
-beneficio excluído por la mochila que no contiene ningún elemento.
-
-Por último, dado que la función comienza siendo llamada con la
-totalidad de lo items y se llama recursivamente hasta que todos han
-sido considerados, esto implica que los $2^n$ son considerados. De
-este modo, el caso correspondiente a la solución al problema de la
-mochila es considerado y, como en el mismo se cumple que su peso es
-menor o igual a $W$, y que excluye la mínima cantidad de beneficio,
-entonces será este número el valor contenido en la variable solución
-al terminar el algoritmo.
+Que el algoritmo considera los $2^n$ casos se sigue de que hay una
+biyección entre los $C$ considerados y las tuplas de ceros y unos de
+longitud $n$ (donde $n$ es el número de ítems). El omitir sumar el
+peso de un ítem corresponde a escribir un cero en la posición de la
+tupla correspondiente a ese ítem, al sumarlo corresponde a escribir un
+uno. Esto puede representarse mediante un árbol binario en el que cada
+nodo, excepto las hojas, tiene dos hijos, y las hojas representan cada
+una de las posibles cargas de la mochila. Hay un nivel por cada ítem a
+considerar y cada nivel tiene el doble de nodos que el anterior.
 
 *** Complejidad
-Consideramos dos partes. En primer lugar, debemos sumar los $w_i$ y
-$p_i$ de los $n$ items y, como dijimos, esto tieneuna complejidad
-$\Theta(n)$.
+
+Cada una de las líneas del programa, exceptuando las llamadas
+recursivas, se computa en $O(1)$. La estructura que contiene los ítems
+es elegida de modo tal de poder determinar si es vacía en $O(1)$
+operaciones, y lo mismo obtener los siguientes. La estructura ~carga~
+es una tupla de dos enteros, de modo que las funcioes ~agregar_item~ ,
+~peso~ y ~beneficio~ son todas $O(1)$.
 
 
-Consideremos ahora el algoritmo presentado. 
-Las líneas 2, 3 y 4 llevan a cabo operaciones constantes pues la
-longitud de la lista de ítems puede obtenerse en tiempo constante
-(dado que la estructura utilizada es ~vector~, para la cual dicha
-operación es $\Theta(1)$). La función ~peso_incl(mochila)~ simplemente
-observa un ~int~ que forma parte de la estructura, también en $\Theta(1)$,
-y lo mismo ocurre con ~beneficio_excl(mochila)~. Las comparaciones y
-la asignación también se reaizan en tiempo constante.
+Cada vez que se llama recursivamente a ~fuerza_bruta~ se pasan los
+siguientes, es decir, un ítem menos. De este modo, la complejidad del
+algoritmo desponde a la siguiente fórmula:
 
-En las líneas 6 y 7 se crean nuevas mochilas, dicha operación tiene
-también tiempo constante pues el tamaño de dicha estructura es
-constante.
-
-Por último, se llama recursivamente a ~fuerza_bruta~ pero en lugar de
-pasar como parámetro todos los ítems, se excluye el primero de
-ellos. De este modo, la complejidad del algiritmo  desponde a la
-siguiente fórmula:
-
-$T(n) =$
+$\newline T(n) =$
  \begin{cases} 
       \Theta(1) & \text{si } n = 0 \\
       2T(n-1) + \Theta(1) &  \text{si n > 0}
    \end{cases}
+$\newline$
 
-De este modo, como:
+Si reemplazamos usando la igualdad:
 $$
 T(n) = 2T(n-1) + \Theta(1) = 2(2T(n-2) + \Theta(1))+ \Theta(1) = 4T(n-2)+ 2\Theta(1) + \Theta(1)
 $$
@@ -189,7 +137,8 @@ $$
 Así
 
 $$
-T(n) = 2^k (n-k) +  \Theta(1) \sum_{i=1}^{k}2^{i-1} = 2^k (n-k) + \Theta(1) 2^k - 1
+T(n) = 2^k (n-k) +  \Theta(1) \sum_{i=1}^{k}2^{i-1} 
+= 2^k (n-k) + \Theta(1) (2^k - 1)
 $$
 
 Y para $k = n$
@@ -198,105 +147,223 @@ T(n) = 2^n (T(0) + \Theta(1)) - \Theta(1)
 $$
 
 De este modo $T(n) = \Theta(2^n)$
+
 ** Backtracking
-El algoritmo implementado mediante la técnica /backtracking/ es muy
-similar a ~fuerza_bruta~. También resuelve el problema llamando
-recursivamente dos veces, considerando los problemas que resultan de
-considerar cada vez subconjuntos de $S$ más chicos. Sin embargo, a
-diferencia de ~fuerza_bruta~, en lugar de recorrer todo el árbol de
-las soluciones (o sea, de los subconjuntos de $S$), realiza dos podas
-en cada una de las llamadas recursivas.
 
-Una de ellas es una poda por factibilidad, en la cual se verifica si
-no se ha superado $W$ con la sumatoria de los pesos ya incluídos en la
-mochila. Es decir que antes de llegar al caso base (en el cual ya se
-han considerado cada uno de los items y se ha decidido si se los
-incluye o excluye de una solución particular) puede determinarse que,
- para algún conjunto $S' \subset S$ se ha colocado más peso que $W$,
-pudiendo descartarse todos los conjuntos $T$ tales que $S' \subset T$
-y cuyo cómputo se realice después.
+El algoritmo presentado anteriormente tiene como desventaja el hecho
+de que el número de casos considerados es exponencial respecto del
+tamaño de los ítems, y eso hace que (como veremos más adelante)
+resulte impracticable incluso con conjuntos de pocos ítems.
 
-Dicho de otro modo, si consideramos un árbol binario
-en el cual cada nivel se realiza la decisión sobre si incluir o no
-cada item, las hojas del mismo representan todas las soluciones (es
-decir, todos los subconjuntos de $S$). Si llegado algún nodo en
-cualquier nivel, se determina que el peso ha excedido $W$, se descarta
-dicho nodo y también todoel subárbol del cual sea su raiz.
+Para disminuir el número de soluciones computadas (es decir de
+/cargas/ observadas) pueden buscarse criterios que permitan omitir
+algunas respecto de las cuales puede decirse, incluso antes de
+calcularlas, que no serán la solución buscada. Además, pueden usarse
+criterios que, considerando el árbol descripto en el apartado
+anterior, pueda omitirse todo un subárbol una vez que estamos seguros
+de que el resultado buscado no está en él.
 
-La otra es la poda por optimalidad. Es similar a la anterior, en
-cuanto que no computa soluciones de las cuales anticipadamente puede
-decirse que no serán válidas. Pero se fija en el beneficio y no en el
-peso. Esta poda se lleva a cabo considerando la suma de los beneficios
-de aquéllos items que no forman parte de una solución, es decir de los
-items de $S \setminus S'$. Si alguna solución ya computada ha dejado afuera
-una beneficio $b_0$ y en un nodo cualquiera encontramos que se ha
-dejado afuera un beneficio de $b_1$, donde $b_0 < b_1$, entonces
-podemos afirmar que la solución obtenida anteriormente está asociada a
-un beneficio mayor y por ende que la otra solución no será la buscada,
-y asimismo que ningún subconjunto que excluya esos items.
+Por ejemplo, si el primer ítem considerado tiene un peso superior a W,
+entonces sabemos que ninguna carga que los contenga será la solución
+buscada. Esto equivale a descartar casi la mitad de los nodos. Esta
+/poda/ es la que llamamos *por factibilidad*. Otra poda que puede
+realizarse con la misma finalidad, que llamamos *por optimalidad*, es
+la de descartar un subárbol una vez que sabemos que las soluciones
+representadas por sus hojas no serán mejores que alguna solución ya
+encontrada. Esto último puede hacerse de distintas maneras. De hecho,
+para el presente trabajo práctico se implementaron dos distintas. Esto
+debido a que, como hipótesis inicial, se había considerado que agregar
+un número no constante de operaciones (es decir, aquellas para
+determinar que se puede efectuar la poda sin dejar de lado la
+solución) podría llegar a empeorar la complejidad, tanto en el peor
+caso como en el promedio. Sin embargo, luego de implementar otro
+algoritmo cuya poda requiere operaciones de complejidad no constante,
+se observó empíricamente que el desempeño medido era mucho mejor,
+llevándo a que revisemos esos presupuestos de partida. 
 
-Ambas podas se realizan manteniendo en cada paso una estructura que
-llamamos ~mochila~ y que es un par se sumas de ítems ~item_sum~, que a
-su vez son pares de ~int~. En ~mochila~ se guardan las sumatorias de
-tanto el peso como el beneficio de los elementos que son incluídos,
-por un lado, y la de los que no lo son, en otro. Así, en cualquier
-momento, puede saberse en $\Theta(1)$ el peso que tiene y también el
-beneficio que fue descartado.
+Los dos algoritmos de /backtracking/ realizados proceden de modo
+similar al de fuerza bruta, pero ambos verifican, por un lado que el
+tamaño de la carga $C$ mantenida no supere $W$. Si esto es así,
+entonces ya no se continúa la recursión, pues todas las soluciones que
+puedan surgir de ahí en adelante tendrán una carga $C'$ tal que
+$C\subset C'$ y por ende serán descartadas.
 
-En realidad, las comparaciones que se llevan a cabo en este algoritmo
-son las mismas que las que se hacen en ~fuerza_bruta~, pero en vez de
-realizarlas al llegar al caso base (es decir al llegar a las hojas del
-árbol de las soluciones) se realiza cada vez que se considera excluir
-o incluir un item.
+La diferencia entre ambos está en la poda por optimalidad. En el
+primero de ellos, además de guardarse las sumas acumuladas de lo que
+cada vez se agrega en la mochila, también se mantienen las sumas de
+lo que se excluye de la mochila. Asimismo, al guardarse una solución,
+se guarda también cuándo del beneficio es excluído en la misma. De
+este modo, pueden descartarse muchas /cargas/ de las que se sabe de
+antemano que no llegaran a acumular un beneficio mayor al de alguna
+solución encontrada, pues ya ha exluído más, en algún estdío previo
+de su cómputo, que el de aquella.
 
+En el segundo se utiliza una estrategia que es capaz de descartar, en
+muchas oportunidades, muchos más casos. Lo que hace es considerar la
+versión /continua/ del problema de la mochila, para el cua existe una
+solución de copmlejidad $O(n\log{n})$. 
+
+*** Versión contínua del problema de la mochila
+Esta versión del problema varía en lo siguiente. Se tiene también un
+conjunto $S$ de ítems, cada uno de tamaño $w_i$ y beneficio $p_i$ y
+una mochila de capacidad $W$. Pero la solución buscada admite dividir
+alguno de los ítems para colocarlo en la mochila. Es decir que, en
+este caso, lo que se busca es maximizar
+
+$$\sum_{i=1}^{n} x_ip_i $$
+
+ con la condición de que se cumpla asimismo 
+
+$$\sum_{i=1}^{n} x_iw_i \leq W $$
+
+donde como antes $w_i > 0$, $p_i > 0$, $i = 1, \dots, n$ son los
+tamaños y el beneficio de los elementos de $S$ pero $x_i \in
+(0,1)$. Es decir que los $x_i$ no son enteros.
+
+En este caso, igual que en el otro, si la suma de los tamaños de los
+ítems es menor o igual que $W$, entonces la mejor solución incluye a
+todos. Sin embargo, si esta suma es mayor, se tiene $\sum_{i=1}^n
+x_iw_i = W$, puesto que si fuera menor, se podría fraccionar alguno de
+los ítems restantes obteniendo un beneficio mayor.
+
+El algoritmo usado para encontrar la solución a esta versión del
+problema ordena, en primer logar, los items, por el /ratio/
+$p_i/w_i$. Luego, mientras quepan en su totalidad los agrega a la
+solución. Si queda espacio, se divide el item siguiente de modo de
+incluir lo más posible. Si bien este algoritmo es correcto para la
+solución del problema de la mochila continuo, lo que nos interesa en
+particular en este contexto es simplmente que su resultado es una cota
+superior del problema de la mochila discreto.
+
+En primer lugar, si la solución encontrada no /parte/ ningún ítem,
+entonces coincide con el discreto. Sean $s_d$ la solución discreta y
+$s_c$ la contínua. Supongamos que $s_d > s_c$. Sea $\hat{s}$ la parte
+de la solución común a ambas (es decir, la suma de los beneficios de
+aquellos ítems que se incluyen integramente tanto en $s_d$ como
+$s_c$). Y ahora sean $s^0_d = s_d - \hat{s}$ y $s^0_c = s_c -
+\hat{s}$. Luego, $s^0_d > s^0_c$. Como ambos valores son no negativos,
+entonces $s^0_d > 0$ y por ende $s^0_d \geq e_{k_1}.p$ para algún $e_{k_1}
+\in S$ y $e_{k_1}$ no está en la parte común de las soluciones ni en la
+solución contínua. Pero entonces $s^0_c \geq e_{k_1}.p$ dado que como
+$e_{k_1}$ no está en $s^0_c$, había un item cuya /ratio/ era mayor, y
+como sí está $s^0_d$ había lugar suficiente. Entonces sean $s^1_d =
+s^0_d - e_{k_1}.p$ y $s^1_c = s^0_c - e_{k_1}$. Ambos son mayores o
+iguales a cero, y podemos repetir hasta llegar a $s^m_d = 0$. Así,
+tenemos que $s^m_d > s^m_c$. Pero $s^m_c \geq 0$. Esta contradicción
+proviene de suponer $s_d > s_c$.
+
+Retomamos ahora el algoritmo de /backtracking/ para la versión
+discreta del problema de la mochila que estábamos discutiendo. Cada
+vez que decidimos agregar (o quitar) un $k$-ésimo item de una
+solución, lo que hacemos es considerar el problema de la mochila
+contínuo para el caso $W - \sum_{i=1}^k x_iw_i$ (nuevamente, $x_i$
+es cero o uno dependiendo de si el $i$-ésimo elemento está en la
+solución), y para los ítems restantes. El resultado es sumado a 
+$\sum_{i=1}^k x_iw_i$ y si esta suma es menor a alguna solución
+anterior, es descartada. El argumento precedente nos asegura que así
+no estaremos descartando la solución buscada.
+
+Como la única diferencia entre ambos algorimos de /backtracking/
+radica en el método empleado para la poda por optimalidad, es decir
+para la cota utilizada para decidir la poda, presentamos un
+pseudocódigo común a ambos, y luego el de la solución al problema
+contínuo de la mochila, que es la cota empleada en el segundo
+~backtracking~.
 
 *** Pseudocódigo
 
 \begin{algorithmic}[1]
 \Procedure{backtracking}
-    {\texttt{list<item>} items, \texttt{int } W, \texttt{mochila } m,
-      \texttt{item\_sum } solucion}
-\If  {peso\_incl(mochila) $\geq$ W \textbf{or}
-        beneficio\_excl(mochila) $>$ beneficio\_excl(solucion)}
+{\texttt{list<item>} items, \texttt{int } W, \texttt{carga } c,
+      \texttt{int } solucion}
+\If  {peso(c) $\geq$ W \textbf{or}
+        beneficio(c) $+$ cota(items, W - peso(c)) < solucion}
 \State \textbf{return}
 \EndIf
 
 \If {len(items) = 0}
-\State solucion $\gets$ mochila
+\State solucion $\gets$ beneficio(mochila)
 \Else 
 \State mochila\_con\_iesimo $\gets$ agregar\_item(first(items), mochila)
 \State mochila\_sin\_iesimo $\gets$ no\_agregar\_item(first(items), mochila)
-\State fuerza\_bruta(siguientes(items), W, mochila\_sin\_iesimo, solucion)
-\State fuerza\_bruta(siguientes(items), W, mochila\_con\_iesimo, solucion)
+\State backtracking(siguientes(items), W, mochila\_sin\_iesimo, solucion)
+\State backtracking(siguientes(items), W, mochila\_con\_iesimo, solucion)
 \EndIf
 \EndProcedure
 \end{algorithmic}
 
+
+\begin{algorithmic}[1]
+\Function{cota}
+{\texttt{list<item>} items, \texttt{int } W}
+\State suma\_peso $\gets$ 0
+\State suma\_beneficio $\gets$ 0
+\For {i $\gets$ 0 \texttt{to } items.size()}
+
+    \If  {suma\_peso + peso(items[i]) $\leq$ W} 
+        \State suma\_peso $\gets$ suma\_peso + peso(items[i])
+        \State suma\_beneficio $\gets$ suma\_beneicio + peso(items[i])
+    \Else 
+        \State parte $\gets$ (W - suma\_peso) / peso(item[i])
+        \State suma\_beneficio $\gets$ 
+            suma\_beneicio + parte * peso(items[i])
+        \State \texttt{break}
+    \EndIf
+\EndFor
+\State \texttt{return} suma\_beneficio
+\EndFunction
+\end{algorithmic}
+
+
 *** Justificación
-La justificación es también similiar a ~fuerza_bruta~, pero en este
-caso no necesariamente se observan todos los subconjuntos de $S$, sino
-que puede ocurrir que se observen menos, tal como se mencionó más
-arriba. Por ejemplo, si el primero de los items tiene un peso asociado
-mayor a $W$, entonces, cuando se llame a ~fuerza_bruta~ con la
-~mochila~ que lo incluya, en la primera línea la condición va a ser
-verdadera, y por lo tanto no seguirá la recursión, y por eso la mitad
-de los subconjuntos de $S$ serán descartados. Sin embargo, como en
-todas esas recursiones se consideran casos en los cuales la mochila
-incluye ese primer elemento, no se pierde la solución buscada.
+
+Como vimos ya, ambas versiones de backtracking con correctas, pues
+como el algoritmo ~fuerza_bruta~ van considerando por cada ítem los
+dos casos en que se los incluya o no en la mochila, pero a diferencia
+de él, se omite a recursión cuando esto es posible, es decir, cuando
+puede asegurarse que la solución buscada no está en ninguna de las
+hojas del subárbol correspondiente a la última decisión adopptada. 
 
 *** Complejidad
-El análisis de la complejidad de ~backtracking~ también es similar al
-de ~fuerza_bruta~. Sin embargo, debido a que la recursión no siempre
-llega hasta el caso base, la fórmula que usamos es la siguiente:
+El análisis de la complejidad del primer caso de /backtracking/, que
+amamos ~backtracking0~ también es similar al de ~fuerza_bruta~. Sin
+embargo, debido a que la recursión no siempre llega hasta el caso
+base, la fórmula que usamos es la siguiente:
+
 
 $$T(0) = \Theta(1)$$
 $$T(n) \leq 2T(n-1) + \Theta(1)$$
 
-Lo cual implica que $T(n) = O(2^n)$.
-Usando inducción, el caso base se sigue de $\Theta(f(b)) \subset
-O(f(n))$. Usando la hipótesis inductiva:
+Siguiendo un argumento similar al de ~fuerza_bruta~, acotamos:
+$$
+T(n) \leq  2^k (n-k) + \Theta(1) (2^k - 1)
+$$
 
-$$T(n) \leq 2(O(2^{n-1})) + \Theta(1) = O(2^n)$$ 
+Lo cual implica que $T(n) = O(2^n)$.
+
+En cuanto al segundo, existen dos puntos diferentes. En primer lugar,
+deben ordenarse los ítems, lo cual se lleva a cabo en $O(n\log{n})$
+operaciones y por lo tato no agrega complejidad. Por otro lado, la
+obtención de la cota es de copmlejidad $O(n)$ pues recorre ítems. Eso
+implica que 
+
+$$T(0) = \Theta(1)$$
+$$T(n) \leq 2T(n-1) + O(n)$$
+
+De este modo
+$$T(n) \leq  2^n \Theta(1) + O(n) 2^n - O(n) $$
+
+o sea
+
+$$ T(n) = O(2^n n)$$
+
+Sin embargo, pese a que la complejidad es peor en ~backtracking~, en
+los casos experimentados suele tardar menos tiempo. Esto es coherente
+con el hecho de que en el estudio de la complejidad se considera
+siempre /el peor/ caso. El peor caso del ~backtraking~ sería aquel en
+el cual la mejor solución corresponda, por ejemplo, a incluir el
+último ítem (ordenado por beneficio / peso).
+
 
 ** Meet in the middle
 El algoritmo ~meet_in_the_middle~ considera las dos mitades del
@@ -307,27 +374,27 @@ partes, y por supuesto el conjunto de items, $S$. Además, recibe el
 valor $W$ para excluir del resultado aquellos subconjuntos $S' \subset
 S$ cuyo peso sea demasiado grande. 
 
-Así se obtienen $A$ y $B$, ~vectors~ que representarán los
-subconjuntos de los conjuntos de partes de cada una de las dos mitades
-de $S$. Cada uno de los elementos de los ~vector~ $A$ y $B$ es una
-posible carga de la mochila. Son subconjuntos de los conjuntos de
-partes de los elementos de las dos mitades del conjunto de items, y no
-conjuntos de partes propiamente dichos, ya que si alguna de las sumas
-acumula un peso mayor a $W$, entonces podemos excluirla sin riesgo a
-dejar de lado la solución buscada. 
+Así se obtienen $A$ y $B$, que representarán subconjuntos de los
+conjuntos de partes de cada una de las dos mitades de $S$. Cada uno de
+los elementos de $A$ y $B$ es una posible carga de la mochila. Son
+subconjuntos de los conjuntos de partes de los elementos de las dos
+mitades del conjunto de items, y no los conjuntos de partes
+propiamente dichos, ya que si alguna de las sumas acumula un peso
+mayor a $W$, entonces podemos excluirla sin riesgo a dejar de lado la
+solución buscada.
 
-Luego se ordena el ~vector~ $B$ tanto por peso como por beneficio, en
-orden creciente. Para ello se ordena, en primer lugar, por peso. Esta
+Luego se ordena el $B$ tanto por peso como por beneficio, en orden
+creciente. Para ello se ordena, en primer lugar, por peso (esta
 operación se lleva a cabo utilizando el algoritmo ~sort~ de la
-biblioteca de ~c++~, el cual tiene una complejidad de $O(l\log{l})$, con
-$l$ el tamaño de la entrada. Como en nuestro caso el tamaño de la
+biblioteca de ~c++~, el cual tiene una complejidad de $O(l\log{l})$,
+con $l$ el tamaño de la entrada). Como en nuestro caso el tamaño de la
 entrada está acotado superiormente por $2^{\frac{n}{2}}$, entonces
-este llamado tiene una complejidad
-$$ O(2^{\frac{n}{2}} \log{2^{\frac{n}{2}}}) = O(n \times 2^{\frac{n}{2}})$$.
+este llamado tiene una complejidad $$ O(2^{\frac{n}{2}}
+\log{2^{\frac{n}{2}}}) = O(n \times 2^{\frac{n}{2}})$$.
 
 Una vez ordenado por peso, decartamos todos aquellos elementos tales
 que pesen más que otro elemento de mayor valor. Como estos elementos
-reresentn ya soluciones al problema, es obvio que como lo que se
+reresentan ya soluciones al problema, es obvio que como lo que se
 quiere es maximizar el beneficio, descartar los elementos mencionados
 no nos harán perder la solución.
 
@@ -347,7 +414,7 @@ de $A$.
 \begin{algorithmic}[1]
 \State \texttt{int}
 \Function{meet\_in\_the\_middle}
-    {\texttt{vector<item> }items, \texttt{int }W}
+    {\texttt{list(item) }items, \texttt{int }W}
 \State A $\gets$ conjunto\_de\_partes(0, n/2, items, W) 
     \Comment {$O(2^{\frac{n}{2}})$}
 \State B $\gets$ conjunto\_de\_partes(n/2, n, items, W)
@@ -384,17 +451,24 @@ de $A$.
 
 
 \begin{algorithmic}[1]
-\State {vector<item\_sum>}
-\Function{filtrar\_mochilas\_pesadas}
-{\texttt{vector<item\_sum> } mochilas }}
-\State res $\gets$ [(0,0)]
-\ForAll {m $\in$ mochila} 
-    \If {res.back().beneficio < m.beneficio}
-        { res.push\_back(m)}
-    \EndIf
+\State {item\_sum}
+\Function{mochila\_optima}
+{\texttt{list(item\_sum) } A, B, \texttt{int } W }}
+\State res $\gets$ ultima(B)
+\ForAll {a $\in$ A} 
+     \State b $\gets$ busqueda\_binaria\_optima(B, W-peso(a))
+     \If {peso(b) + peso(a) $\leq$ W}
+         \State a $\gets$ a + b
+     \Else {
+      \If { peso(b) $>$ peso(a) }
+      \State a $\gets$ b
+      \EndIf
+}\EndIf
 \EndFor
 \State \textbf{return} res
 \EndFunction
 \end{algorithmic}
+
+
 
 ** Programación dinámica

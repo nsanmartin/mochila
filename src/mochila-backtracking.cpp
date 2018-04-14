@@ -5,47 +5,57 @@
 #include "mochila.h"
 using namespace std;
 
-
 void
-resolver_backtracking (vector<item_t> &items, int i, int W, mochila &m,
-                       item_sum_t &mejor);
+resolver_backtracking (vector<item_t> &items, int i, int W, item_sum_t &m,
+                        int &mejor);
+
+
+
+double mochila_gls(vector<item_t>&items, int desde, int tope);
 
 int backtracking (vector<item_t> &items, int W) {
-     mochila m;
-     m.afuera = item_t(0,0);
-     item_sum_t total = item_sum_t(0,0);
-     for (int i = 0; i < items.size(); i ++) {
-          agregar_item_a_suma(total, items[i]);
-     }
-     if (total.second <= W) return total.first;
-     item_sum_t mejor_afuera = item_sum_t(total);
-     resolver_backtracking(items, items.size(), W, m, mejor_afuera);
-
-     return total.first - mejor_afuera.first;
+     sort(items.begin(), items.end(), [] (item_t x, item_t y) {
+               return (double)x.first/(double)x.second
+                    < (double)y.first/(double)y.second ;
+          });
+     item_sum_t m = item_t(0,0);
+     int mejor = 0;
+     resolver_backtracking(items, items.size(), W, m, mejor);
+     return mejor;
 }
-
 
 void
-resolver_backtracking (vector<item_t> &items, int i, int W, mochila &m,
-                       item_sum_t &mejor_afuera)
+resolver_backtracking (vector<item_t> &items, int i, int W, item_sum_t &m,
+                        int &mejor)
 {
-     // poda por optimalidad: "ya saque demasiado valor como para
-     // alcanzar el mejor_afuera observado"
-     if (m.afuera.first > mejor_afuera.first || m.adentro.second > W) 
+     double cota_gls = mochila_gls(items, i-1, W - m.second);
+     if (m.second > W || cota_gls + (double) m.first < (double)mejor)
           return;
-
-     if (i == 0) {  // ultimo
-          mejor_afuera  = m.afuera;          
-     } else {
-          mochila m_sin_iesimo(m);
-          agregar_item_a_suma(m.adentro, items[i - 1]);
-          resolver_backtracking(items, i - 1, W, m, mejor_afuera);
-          agregar_item_a_suma(m_sin_iesimo.afuera, items[i - 1]);
-          resolver_backtracking(items, i - 1, W, m_sin_iesimo,
-                                mejor_afuera);
+     if (i == 0) 
+          mejor = m.first;
+     else {
+          item_sum_t m_sin_iesimo(m);
+          resolver_backtracking(items, i - 1, W, m_sin_iesimo, mejor);
+          agregar_item_a_suma(m, items[i - 1]);
+          resolver_backtracking(items, i - 1, W, m, mejor);
      }
 }
 
 
-
-
+double mochila_gls(vector<item_t>&items, int i, int tope) {
+     double benef = 0;
+     int peso = 0;
+     for (;i >= 0 && peso < tope; i--) {
+          if (peso + items[i].second <= tope) {
+               benef += (double) items[i].first;
+               peso += items[i].second;
+          } else {
+               double parte = (double)items[i].first
+                    *(double) ((tope-peso)/(double)items[i].second);
+               benef += parte;
+               peso += items[i].second;
+               break;
+          }
+     }
+     return benef;
+}

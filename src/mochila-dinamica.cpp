@@ -12,20 +12,20 @@ inline bool mul_overflow(int x, int y) {
 }
 
 class Tabla {
-     int _nfilas;
-     int _ncolumnas;
+     unsigned long _nfilas;
+     unsigned long _ncolumnas;
      vector<int> _tabla;
 public:
-     Tabla(int nfilas, int ncols) {
+     Tabla(unsigned long nfilas, unsigned long ncols) {
           assert(!mul_overflow(nfilas, ncols));
           _tabla = vector<int>(nfilas * ncols);
           _nfilas = nfilas;
           _ncolumnas = ncols;
      }
-     int get(int fila, int col) {
+     int get(unsigned long fila, unsigned long col) {
           return _tabla[fila * _ncolumnas + col];
      }
-     void set(int fila, int col, int elem) {
+     void set(unsigned long fila, unsigned long col, int elem) {
           _tabla[fila * _ncolumnas + col] = elem;
      }
 };

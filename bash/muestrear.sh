@@ -57,7 +57,7 @@ PROG=$1
 DESDE=$2
 CADA=$3
 if [ ! -z $4 ]; then VECES=$4 ; fi
-CMD=${BASE_DIR}/build/${PROG}
+CMD=${PROG}
 if [ ! -f $CMD ]; then
     echo falta compilar el programa: make ${PROG}
 else if [ $# -lt 3 ]; then

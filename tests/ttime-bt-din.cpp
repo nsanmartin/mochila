@@ -8,27 +8,24 @@ using namespace std;
 
 void muestrear_algoritmos_bt_din(int W, vector<item_t> items) ;
 
-void test_cons_bt_din(int n, int W) {
-     vector<item_t> items = random_items(n);
-     muestrear_algoritmos_bt_bt2(W, items);
-}
-
 
 int main (int argc, char ** argv) {
-
-     int n;
-     int W = rand_int_mod(1000) ;
-     if (argc == 2) {
-          n = atoi(argv[1]);
-          cout << W << " " << n << " ";
-          test_cons_bt_din(n, W);
-     } else if (argc == 3){
-          W = atoi(argv[1]);
-          n = atoi(argv[2]);
-          cout << n << " " << W << " " ;
-          test_cons_bt_din(n, W);
-          cout << endl;
+     int W;
+     vector<item_t> items;
+     if (argc == 1) {
+          leer_parametros_stream(W, items, cin);
      } else {
-          cout << "uso: " << argv[0] << " W n.\n";
+          string filename = argv[1];
+          ifstream file;
+          file.open(filename);
+          if (!file) {
+               cerr << "No se pudo leer " << filename << endl;
+               exit(1);
+          }
+
+          leer_parametros_stream(W, items, file);
      }
+     cout << items.size() << " " << W << " ";
+     muestrear_algoritmos_bt_din(W, items);
+     cout << endl;
 }

@@ -45,9 +45,9 @@ int muestrear_bt(int W, vector<item_t> items) {
      return resbt;
  }
 
-int muestrear_bt2(int W, vector<item_t> items) {
+int muestrear_bt0(int W, vector<item_t> items) {
      auto start_bt = chrono::steady_clock::now();
-     int resbt = backtracking2(items, W);
+     int resbt = backtracking0(items, W);
      auto end_bt = chrono::steady_clock::now();
      auto diff_bt = end_bt - start_bt;
      cout << chrono::duration <double, milli> (diff_bt).count() << " ";
@@ -101,12 +101,12 @@ void muestrear_algoritmos_bt_mm_din(int W, vector<item_t> items) {
 
 
 void muestrear_algoritmos_bt_bt2(int W, vector<item_t> items) {
+     int resbt0 = muestrear_bt0(W, items);
      int resbt = muestrear_bt(W, items);
-     int resbt2 = muestrear_bt2(W, items);
-     if ( resbt != resbt2) {
-          cerr << "Error: bt , y bt2 no coincieden." << endl;
-          cerr << "\t resbt: " << resbt
-               << "\t resbt2: " << resbt2 
+     if ( resbt0 != resbt) {
+          cerr << "Error: bt0 , y bt no coincieden." << endl;
+          cerr << "\t resbt: " << resbt0
+               << "\t resbt2: " << resbt 
                << endl;
           cout << "========\n";
           cout << items.size() << " " << W << endl;
@@ -118,52 +118,35 @@ void muestrear_algoritmos_bt_bt2(int W, vector<item_t> items) {
 
 
 
-void muestrear_algoritmos_bt2_din(int W, vector<item_t> items) {
-     int resbt2 = muestrear_bt2(W, items);
-     int resdin = muestrear_din(W, items);
-     if ( resbt2 != resdin) {
-          cerr << "Error: bt , y bt2 no coincieden." << endl;
-          cerr << "\t resbt: " << resbt2
-               << "\t resdin: " << resdin 
-               << endl;
-          cout << "========\n";
-          cout << items.size() << " " << W << endl;
-          for (auto x : items)
-               cout << x.second << " " << x.first << " "<<  endl ;
-          exit(1);
-     } 
+// void muestrear_algoritmos_bt_din(int W, vector<item_t> items) {
+//      int resbt = muestrear_bt(W, items);
+//      int resdin = muestrear_din(W, items);
+//      if ( resbt != resdin) {
+//           cerr << "Error: bt , y bt2 no coincieden." << endl;
+//           cerr << "\t resbt: " << resbt
+//                << "\t resdin: " << resdin 
+//                << endl;
+//           cout << "========\n";
+//           cout << items.size() << " " << W << endl;
+//           for (auto x : items)
+//                cout << x.second << " " << x.first << " "<<  endl ;
+//           exit(1);
+//      } 
 
-}
+// }
 
 void muestrear_algoritmos_bt_din(int W, vector<item_t> items) {
-     cout << "__ ";
-
-     auto start_bt2 = chrono::steady_clock::now();
-     int resbt2 = backtracking (items, W);
-     auto end_bt2 = chrono::steady_clock::now();
-     auto diff_bt2 = end_bt2 - start_bt2;
-     cout << chrono::duration <double, milli> (diff_bt2).count() << " ";
-
-     cout << " __ ";
-     
-     auto start_din = chrono::steady_clock::now();
-     int resdin = dinamica(items, W);
-     auto end_din = chrono::steady_clock::now();
-     auto diff_din = end_din - start_din;
-     cout << chrono::duration <double, milli> (diff_din).count() << " ";
-     cout << endl;
-     if (  resbt2 != resdin) {
+     int rbt = muestrear_bt(W, items);
+     int rdin = muestrear_din(W, items);
+     if (  rbt != rdin) {
           cerr << "Error!!! fb4 , meet y bt no coincieden!!!!" << endl;
-          cerr << "\t resbt: " << resbt2 << "\t resdin: "
-               << resdin
+          cerr << "\t resbt: " << rbt << "\t resdin: "
+               << rdin
                << endl;
           for (auto x : items)
                cout << x.first << "/" << x.second << " "<<  endl ;
 
           cout << "W: " << W << endl;
           exit(1);
-     } else {
-          //cout << res4 << endl;
-     }
-
+     } 
 }

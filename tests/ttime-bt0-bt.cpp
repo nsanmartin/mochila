@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void muestrear_algoritmos_bt2_din(int W, vector<item_t> items) ;
+void muestrear_algoritmos_bt0_bt(int W, vector<item_t> items) ;
 
 
 int main (int argc, char ** argv) {
@@ -26,6 +26,6 @@ int main (int argc, char ** argv) {
           leer_parametros_stream(W, items, file);
      }
      cout << items.size() << " " << W << " ";
-     muestrear_algoritmos_bt2_din(W, items);
+     muestrear_algoritmos_bt0_bt(W, items);
      cout << endl;
 }

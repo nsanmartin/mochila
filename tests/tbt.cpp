@@ -25,4 +25,5 @@ int main(int argc, char** argv) {
      }
      cout << items.size() << " " << W << " ";
      muestrear_bt(W, items);
+     cout << endl;
 }
