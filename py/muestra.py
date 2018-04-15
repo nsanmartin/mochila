@@ -19,7 +19,7 @@ def random_items(n, pmin, pmax, wmin, wmax):
 
 
 def main(params):
-    items = random_items(int(params[0]), 1, 10, 1, 10)
+    items = random_items(int(params[0]), 1, 49, 1, 49)
     print_input(items, params[1])
 
     

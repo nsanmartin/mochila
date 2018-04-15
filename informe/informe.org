@@ -472,3 +472,102 @@ de $A$.
 
 
 ** Programación dinámica
+El problema de la mochila tiene dos características que permiten
+implementar una solución aplicando la técnica de /programación
+dinámica/. Una es que satisaface el *principio de optimalidad*, según
+el cual una solución óptima está hecha de decisiones también
+optimas. Es decir, cuando se decide respecto de un item $e$ si
+incluirlo o no en la solución, se tienen dos subproblemas, a saber: el
+de hallar la solución para el problema de la mochila con mismo $W$
+pero respecto del conjunto $S\setminus\{e\}$, o bien el de hallar la
+solución para el problema de la mochila para $W-e.w$ respecto también
+de $S\setminus\{e\}$. El principio se aplica pues dada la solución
+para $W$ y $S$, entonces no existen subsoluciones mejores que las que
+están implícitamente adoptadas. 
+
+Supongamos que esto no es así. Sea $X$ la solución en
+cuestión. Entonces hay una solución $Y$ para el problema con $W$ y
+$S\setminus\{e\}$, o bien una solución $W$ para $W-e.w$ y
+$S\setminus\{e\}$. Pero claramente no puede ser $Y<X$ pues en tal caso
+$X$ no sería mejor y podríamos usar en su lugar $Y$. Análogamente
+ocurre con $W$. De este modo, dadas ambas soluciones, podemos
+compararlas para obtener la solución óptima del problema más grande.
+
+Por otra parte, si se consideran todos los subproblemas en el problea
+de la mochila, resulta que muchas soluciones parciales se requieren en
+diferentes etapas. Dicho de otro modo, existen problemas que se
+superponen. Esto significa que puede guardarse un resultado en la
+memoria de manera de evitar tener que computarlo más de una vez.
+
+La estrategia seguida por el algoritmo dinámico entonces consiste
+proceder /buttom-up/, comenzando por los problemas más simples,
+subproblemas de los subsiguientes. En este caso existen dos
+dimensiones de los problemas, a saber, la capacidad de la mochila por
+un lado, el conjunto de ítems por otro. Así, los problemas se
+incrementan a medida que ya sea que se considere un ítem adicional, o
+bien que se aumente la capacidad a utilizar.
+
+En esta implementación disponemos una tabla cuyas columnas representan
+los distintos $W$ y las filas los ítems considerados. Es decir que la
+celda $c_{i,j}$ tiene el valor correspondiente al problema con $W=j$ y
+los items $1$ a $i$. Usando el argumento anterior sabemos que:
+
+$$c_{i,j} = \max(c_{i-1,j}, c_{i-1, j-w_i} + p_i) $$
+
+donde $w_i$, $p_i$ son el tamaño y beneficio del $j$-ésimo ítem.
+
+*** Pseudocódigo
+
+\begin{algorithmic}[1]
+\State \texttt{int}
+\Function{dinamica}{\texttt{list(item)} items, \texttt{int } W} 
+    \State n $\gets$ items.size()
+    \State tabla $\gets$ Tabla($n+1, W+1$)
+    \For {i $\gets$0 \texttt{to} $n+1$} 
+        \For {j$\gets$0 \texttt{to} $W+1$} 
+            \If { i $==$ 0 \texttt{or } j $==$ 0}
+                \State valor $\gets$ 0
+            \Else 
+                \State valor $\gets$ tabla[$i-1, j$]
+                \If { $j \geq w_i$ }
+                    \State valor2 $\gets$ tabla[$i-1, j-w_i$] + $p_i$
+                    \If { valor2 $>$ valor} 
+                    \State valor $\gets$ valor2
+                    \EndIf
+            \EndIf
+         \EndIf
+         \State tabla[$i,j$] $\gets$ valor
+     \EndFor
+    \EndFor
+    \State \textbf{return} tabla[$n, W$]
+\EndFunction
+\end{algorithmic}
+
+*** Complejidad
+En este caso la complejidad del algoritmo, dado que las operaciones
+que realiza son $O(1)$, pero los ciclos *for* se repiten $n$ y $W$
+veces, es de $\Theta(n\times W)$.
+
+De esto se sigue que este agoritmo se comopoirtará, en cuanto a tiempo
+de ejecución, bastante distinto a resto de los mencionados. A medida
+que, fijado un $W$, aumente $n$, los otros algoritmos mostrarán un
+crecimiento exponencial, mientras que este crecerá linealmente. En
+cambio, si crece mucho $W$, quedando $n$ fijo, los algoritmos
+~fuerza_bruta~ y ~meet_in_the_middle~ mantendrán valores estables,
+mientras que ~backtracking~ puede incluso tomar un menor tiempo (dado
+que podrían realizarse podas que produzcan ese resultado). Sin
+embargo, el algoritmo ~dinamica~ crecerá junto con $W$. 
+
+
+* Experimentación
+
+Para realizar la comparación entre los agoritmos presentados fijamos
+en primer lugar para los valores tanto de los tamaños como de los
+beneficios inherentes a cada uno de los ítems valores provenientes de
+una distribución uniforme discreta entre 1 y 49. De este modo $E(w) =
+E(p) = 25$. Desde luego que variar estos valores modifica los
+resultados, pero también es cierto que su efecto es similar al de
+variar los otros parámetros. Por ejemplo, si tomaramos rango en
+$[1..99]$, esto tendría un efecto similara reducir $W$. 
+
+

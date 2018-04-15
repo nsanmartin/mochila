@@ -32,10 +32,7 @@ public:
 
 int dinamica (vector<item_t> &items, int W) {
      const int n = items.size();
-     if (n == 0)
-          return 0;
      Tabla tabla(n + 1, W + 1);
-     int k = 1;
 
      for (int i = 0; i < n + 1; i ++)
           for (int j = 0; j < W + 1; j++) {

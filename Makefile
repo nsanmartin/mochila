@@ -14,6 +14,9 @@ ttime-bt2-din: $(OBJECTS)
 ttime-bt-bt2: $(OBJECTS) 
 	g++  -o build/$@ $(CFLAGS) tests/$@.cpp $^
 
+ttime-bt0-bt: $(OBJECTS) 
+	g++  -o build/$@ $(CFLAGS) tests/$@.cpp $^
+
 build:
 	if [ ! -d build ]; then mkdir build; fi
 

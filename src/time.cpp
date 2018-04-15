@@ -10,15 +10,6 @@
 
 using namespace std;
 
-void comparar_bt_mm(int W, vector<item_t> items) ;
-
-void test_cons(int n, int W) {
-     vector<item_t> items = random_items(n);
-     muestrear_algoritmos(W, items);
-     
-}
-
-
 int muestrear_fb(int W, vector<item_t> items) {
      auto start_fb = chrono::steady_clock::now();
      int resfb = fuerza_bruta(items, W);
@@ -100,7 +91,7 @@ void muestrear_algoritmos_bt_mm_din(int W, vector<item_t> items) {
 }
 
 
-void muestrear_algoritmos_bt_bt2(int W, vector<item_t> items) {
+void muestrear_algoritmos_bt0_bt(int W, vector<item_t> items) {
      int resbt0 = muestrear_bt0(W, items);
      int resbt = muestrear_bt(W, items);
      if ( resbt0 != resbt) {
